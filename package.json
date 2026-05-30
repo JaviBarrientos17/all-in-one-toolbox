@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview",
+    "preview": "npm run build && wrangler dev",
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build",
@@ -13,7 +13,8 @@
     "auto-report": "node auto-report.js",
     "version:patch": "node bump-version.js patch",
     "version:minor": "node bump-version.js minor",
-    "version:major": "node bump-version.js major"
+    "version:major": "node bump-version.js major",
+    "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
     "browser-image-compression": "^2.0.2",
@@ -26,6 +27,7 @@
     "react-dom": "^19.2.6"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.39.0",
     "@tauri-apps/cli": "^2.11.2",
     "@types/file-saver": "^2.0.7",
     "@types/react": "^19.2.15",
@@ -35,6 +37,7 @@
     "postcss": "^8.4.32",
     "tailwindcss": "^3.4.19",
     "typescript": "^6.0.3",
-    "vite": "^6.4.2"
+    "vite": "^6.4.2",
+    "wrangler": "^4.95.0"
   }
 }
