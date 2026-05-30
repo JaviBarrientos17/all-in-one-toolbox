@@ -1,149 +1,205 @@
 # 🛠️ All-in-One Toolbox
 
-**Todas tus herramientas en un solo lugar • 100% Local • Sin Internet**
+**100% Local File Processing** - Herramientas de procesamiento de archivos completamente locales y seguras.
 
-Una suite completa de herramientas para procesamiento de archivos que funciona completamente en local, sin necesidad de subir tus archivos a ningún servidor. Disponible como aplicación web y aplicación de escritorio para Windows 10/11.
-
-## ✨ Características
-
-### 🖼️ Herramientas de Imagen
-- **Comprimir**: Reduce el tamaño de tus imágenes sin perder calidad
-- **Redimensionar**: Cambia las dimensiones de tus imágenes
-- **Convertir**: Convierte entre formatos (PNG, JPEG, WebP)
-- **Rotar**: Rota imágenes 90°, 180° o 270°
-- **Recortar**: Recorta áreas específicas de tus imágenes (en desarrollo)
-
-### 📄 Herramientas de PDF
-- **Fusionar**: Combina múltiples PDFs en uno solo
-- **Dividir**: Separa un PDF en páginas individuales
-- **Extraer**: Extrae páginas específicas de un PDF
-- **Rotar**: Rota todas las páginas de un PDF
-- **Comprimir**: Reduce el tamaño de archivos PDF (en desarrollo)
-
-### 🎬 Herramientas de Video (Próximamente)
-- Conversión de formatos
-- Comprimir videos
-- Extraer audio
-- Crear GIFs desde video
-
-### 📝 Herramientas de Documentos (Próximamente)
-- Conversión Word/PDF
-- Manipulación de Excel
-- Conversión de formatos
-
-## 🚀 Inicio Rápido
-
-### Versión Web
-
-```bash
-# Instalar dependencias
-npm install
-
-# Iniciar servidor de desarrollo
-npm run dev
-
-# La aplicación estará disponible en http://localhost:1420
-```
-
-### Versión Escritorio (Windows 10/11)
-
-**Requisitos previos:**
-- Node.js 20+
-- Rust (para compilar Tauri)
-  - Instalar desde: https://rustup.rs/
-
-```bash
-# Instalar dependencias
-npm install
-
-# Ejecutar en modo desarrollo
-npm run tauri:dev
-
-# Compilar aplicación
-npm run tauri:build
-
-# El instalador se generará en src-tauri/target/release/bundle/
-```
-
-## 🛡️ Privacidad y Seguridad
-
-**100% Procesamiento Local**: Todos los archivos se procesan completamente en tu dispositivo. Nunca se suben a ningún servidor externo.
-
-- ✅ Sin conexión a internet requerida (después de la carga inicial)
-- ✅ Tus archivos nunca abandonan tu ordenador
-- ✅ Sin bases de datos externas
-- ✅ Sin seguimiento ni analytics
-- ✅ Sin registro de usuarios
-
-## 🔧 Tecnologías
-
-- **Frontend**: React 18 + TypeScript
-- **Build Tool**: Vite 5
-- **Styling**: Tailwind CSS 3
-- **Desktop**: Tauri 2
-- **PDF Processing**: pdf-lib, pdfjs-dist
-- **Image Processing**: browser-image-compression
-- **File Handling**: JSZip, file-saver
-
-## 📦 Estructura del Proyecto
-
-```
-all-in-one-toolbox/
-├── src/
-│   ├── components/
-│   │   ├── ImageTools.tsx    # Herramientas de imagen
-│   │   └── PDFTools.tsx       # Herramientas de PDF
-│   ├── App.tsx                # Componente principal
-│   ├── main.tsx               # Entry point
-│   └── index.css              # Estilos globales
-├── src-tauri/                 # Configuración Tauri
-│   ├── src/
-│   │   └── main.rs            # Backend Rust
-│   ├── Cargo.toml
-│   └── tauri.conf.json
-├── public/                    # Assets estáticos
-├── progress-reports/          # Reportes de progreso
-└── package.json
-
-```
-
-## 📊 Reportes de Progreso
-
-El proyecto incluye un sistema de generación automática de reportes:
-
-```bash
-npm run report
-```
-
-Los reportes se guardan en `progress-reports/` y contienen:
-- Estadísticas del código
-- Funcionalidades implementadas
-- Estado de cada herramienta
-- Próximos pasos
-
-## 🤝 Contribuciones
-
-Este proyecto está en desarrollo activo. Las siguientes funcionalidades están planeadas:
-
-- [ ] Drag & drop de archivos
-- [ ] Preview de imágenes antes de procesar
-- [ ] Más formatos de imagen (HEIC, TIFF, BMP)
-- [ ] Herramientas de video con FFmpeg.wasm
-- [ ] Historial de operaciones
-- [ ] Configuración avanzada de calidad
-- [ ] Batch processing mejorado
-- [ ] Modo oscuro
-- [ ] Múltiples idiomas
-
-## 📝 Licencia
-
-MIT License - Libre para uso personal y comercial
-
-## 👤 Autor
-
-**Javi Barrientos**
-- Email: javibarrientos0017@gmail.com
+[![Build Status](https://github.com/JaviBarrientos17/all-in-one-toolbox/workflows/Build%20and%20Test/badge.svg)](https://github.com/JaviBarrientos17/all-in-one-toolbox/actions)
+[![Release](https://github.com/JaviBarrientos17/all-in-one-toolbox/workflows/Release%20Windows%20Installer/badge.svg)](https://github.com/JaviBarrientos17/all-in-one-toolbox/releases)
 
 ---
 
-• Sin telemetría • Sin suscripciones • Gratis para siempre
+## 🌟 Características
+
+### 🖼️ Herramientas de Imagen
+- ✅ Comprimir imágenes (JPG, PNG, WebP, HEIC)
+- ✅ Redimensionar con bloqueo de proporción
+- ✅ Convertir entre formatos
+- ✅ Rotar imágenes
+- ✅ Añadir marcas de agua
+- 🔜 Recortar imágenes
+
+### 📄 Herramientas PDF
+- ✅ Fusionar múltiples PDFs
+- ✅ Dividir PDF en páginas individuales
+- ✅ Extraer páginas específicas
+- ✅ Rotar páginas
+- 🔜 Comprimir PDFs
+
+### 📝 Herramientas de Documentos
+- ✅ TXT a PDF
+- ✅ CSV a JSON
+- ✅ JSON a CSV
+- 🔜 Word a PDF
+- 🔜 Excel a PDF
+
+### 🎬 Herramientas de Video
+- 🔜 Próximamente
+
+---
+
+## 🚀 Instalación
+
+### Opción 1: Aplicación de Escritorio (Windows)
+
+Descarga el instalador desde [GitHub Releases](https://github.com/JaviBarrientos17/all-in-one-toolbox/releases/latest):
+
+- **MSI Installer**: Para instalación corporativa
+- **NSIS Installer (EXE)**: Para instalación rápida
+
+### Opción 2: Aplicación Web
+
+Visita: [all-in-one-toolbox.pages.dev](https://all-in-one-toolbox.pages.dev)
+
+---
+
+## 💻 Desarrollo
+
+### Requisitos Previos
+- Node.js 22.16.0
+- npm 10.9.2
+- Rust (solo para builds de escritorio)
+
+### Instalación Local
+
+```bash
+# Clonar repositorio
+git clone https://github.com/JaviBarrientos17/all-in-one-toolbox.git
+cd all-in-one-toolbox
+
+# Instalar dependencias
+npm install
+
+# Ejecutar en modo desarrollo (Web)
+npm run dev
+
+# Ejecutar aplicación de escritorio (Tauri)
+npm run tauri:dev
+```
+
+### Compilar para Producción
+
+```bash
+# Build para web
+npm run build
+
+# Build para escritorio (Windows)
+npm run tauri:build
+```
+
+---
+
+## 📦 Crear Nueva Versión
+
+### Método Automático (Recomendado)
+
+```bash
+# Actualizar versión patch (1.0.0 → 1.0.1)
+npm run version:patch
+
+# Actualizar versión minor (1.0.0 → 1.1.0)
+npm run version:minor
+
+# Actualizar versión major (1.0.0 → 2.0.0)
+npm run version:major
+
+# Pushear cambios y tag para crear release automático
+git push origin main
+git push origin v1.0.1
+```
+
+### Método Manual
+
+1. Actualizar versión en `package.json`
+2. Actualizar versión en `src-tauri/tauri.conf.json`
+3. Crear commit y tag:
+
+```bash
+git add .
+git commit -m "chore: bump version to 1.0.1"
+git tag v1.0.1
+git push origin main
+git push origin v1.0.1
+```
+
+---
+
+## 🔒 Seguridad y Privacidad
+
+- ✅ **100% Procesamiento Local** - Tus archivos nunca salen de tu dispositivo
+- ✅ **Sin Servidores** - Todo el procesamiento ocurre en tu navegador/PC
+- ✅ **Sin Tracking** - No recopilamos ningún dato
+- ✅ **Open Source** - Código completamente auditable
+
+---
+
+## 🌍 Idiomas Soportados
+
+- 🇬🇧 English
+- 🇪🇸 Español
+
+---
+
+## 🎨 Temas
+
+- ☀️ Modo Claro
+- 🌙 Modo Oscuro
+
+---
+
+## 📱 Responsive Design
+
+Optimizado para:
+- 📱 Móviles (320px+)
+- 📱 Tablets (768px+)
+- 💻 Portátiles (1024px+)
+- 🖥️ Escritorio (1280px+)
+- 🖥️ Pantallas grandes (1920px+)
+
+---
+
+## 🤝 Contribuir
+
+Las contribuciones son bienvenidas! Por favor:
+
+1. Fork el proyecto
+2. Crea tu rama de feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+---
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para detalles.
+
+---
+
+## 🔗 Enlaces
+
+- 🌐 [Aplicación Web](https://all-in-one-toolbox.pages.dev)
+- 📦 [Releases](https://github.com/JaviBarrientos17/all-in-one-toolbox/releases)
+- 🐛 [Reportar Bug](https://github.com/JaviBarrientos17/all-in-one-toolbox/issues)
+- 💡 [Solicitar Feature](https://github.com/JaviBarrientos17/all-in-one-toolbox/issues)
+
+---
+
+## 👨‍💻 Autor
+
+**Javi Barrientos**
+
+- GitHub: [@JaviBarrientos17](https://github.com/JaviBarrientos17)
+
+---
+
+## 🙏 Agradecimientos
+
+- [Tauri](https://tauri.app/) - Framework para aplicaciones de escritorio
+- [React](https://react.dev/) - Biblioteca de UI
+- [Vite](https://vitejs.dev/) - Build tool
+- [Tailwind CSS](https://tailwindcss.com/) - Framework de CSS
+- [pdf-lib](https://pdf-lib.js.org/) - Manipulación de PDFs
+- [browser-image-compression](https://github.com/Donaldcwl/browser-image-compression) - Compresión de imágenes
+
+---
+
+**Made with ❤️ by Javi Barrientos**
