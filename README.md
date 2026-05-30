@@ -146,4 +146,4 @@ MIT License - Libre para uso personal y comercial
 
 ---
 
-💜 **Hecho con amor para la comunidad** • Sin telemetría • Sin suscripciones • Gratis para siempre
+• Sin telemetría • Sin suscripciones • Gratis para siempre

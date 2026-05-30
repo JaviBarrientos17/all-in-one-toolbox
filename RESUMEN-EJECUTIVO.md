@@ -238,4 +238,4 @@ El código está bien estructurado, documentado y listo para futuras expansiones
 **Estado:** 🟢 **Producción Ready (Versión Web)**  
 **Próximo Paso:** Compilación de aplicación de escritorio y añadir herramientas de video  
 
-💜 **Hecho con amor para la comunidad**
+• Sin telemetría • Sin suscripciones • Gratis para siempre
