@@ -18,6 +18,7 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
   background: #f8fafc;
   color: #1e293b;
+  overflow-x: hidden;
 }
 
 /* Dark theme */
@@ -61,4 +62,34 @@ code {
 
 .dark ::-webkit-scrollbar-thumb:hover {
   background: #64748b;
+}
+
+/* Responsive utilities */
+@media (max-width: 640px) {
+  /* Mobile optimizations */
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  /* Tablet optimizations */
+  html {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 1025px) {
+  /* Desktop optimizations */
+  html {
+    font-size: 16px;
+  }
+}
+
+/* Touch-friendly tap areas on mobile */
+@media (hover: none) and (pointer: coarse) {
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }

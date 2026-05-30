@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
 import { useHistory } from '../hooks/useHistory'
+import { useLanguage } from '../contexts/LanguageContext'
 
 type DocumentTool = 'word-to-pdf' | 'excel-to-pdf' | 'txt-to-pdf' | 'csv-to-json' | 'json-to-csv'
 
@@ -10,13 +11,14 @@ function DocumentTools() {
   const [isDragging, setIsDragging] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { addToHistory } = useHistory()
+  const { t } = useLanguage()
 
   const tools = [
-    { id: 'txt-to-pdf' as DocumentTool, name: 'TXT a PDF', icon: '📝' },
-    { id: 'csv-to-json' as DocumentTool, name: 'CSV a JSON', icon: '📊' },
-    { id: 'json-to-csv' as DocumentTool, name: 'JSON a CSV', icon: '📋' },
-    { id: 'word-to-pdf' as DocumentTool, name: 'Word a PDF', icon: '📄', disabled: true },
-    { id: 'excel-to-pdf' as DocumentTool, name: 'Excel a PDF', icon: '📈', disabled: true },
+    { id: 'txt-to-pdf' as DocumentTool, name: t('doc.toPDF'), icon: '📝' },
+    { id: 'csv-to-json' as DocumentTool, name: 'CSV → JSON', icon: '📊' },
+    { id: 'json-to-csv' as DocumentTool, name: 'JSON → CSV', icon: '📋' },
+    { id: 'word-to-pdf' as DocumentTool, name: t('doc.toWord'), icon: '📄', disabled: true },
+    { id: 'excel-to-pdf' as DocumentTool, name: t('doc.toExcel'), icon: '📈', disabled: true },
   ]
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,14 +99,14 @@ function DocumentTools() {
       }
 
       addToHistory(
-        'Convertir TXT a PDF',
+        t('doc.history.convert'),
         'document',
         selectedFiles.length,
-        'Archivos de texto convertidos a PDF'
+        `${selectedFiles.length} ${t('doc.history.convertDesc')}`
       )
     } catch (error) {
       console.error('Error convirtiendo:', error)
-      alert('Error al convertir archivos')
+      alert(t('pdf.alert.error'))
     } finally {
       setProcessing(false)
     }
@@ -147,14 +149,14 @@ function DocumentTools() {
       }
 
       addToHistory(
-        'Convertir CSV a JSON',
+        t('doc.history.convert'),
         'document',
         selectedFiles.length,
-        'Archivos CSV convertidos a JSON'
+        `${selectedFiles.length} ${t('doc.history.convertDesc')}`
       )
     } catch (error) {
       console.error('Error convirtiendo:', error)
-      alert('Error al convertir archivos')
+      alert(t('pdf.alert.error'))
     } finally {
       setProcessing(false)
     }
@@ -171,7 +173,7 @@ function DocumentTools() {
         const data = JSON.parse(text)
 
         if (!Array.isArray(data) || data.length === 0) {
-          alert('El archivo JSON debe contener un array de objetos')
+          alert(t('pdf.alert.error'))
           continue
         }
 
@@ -199,14 +201,14 @@ function DocumentTools() {
       }
 
       addToHistory(
-        'Convertir JSON a CSV',
+        t('doc.history.convert'),
         'document',
         selectedFiles.length,
-        'Archivos JSON convertidos a CSV'
+        `${selectedFiles.length} ${t('doc.history.convertDesc')}`
       )
     } catch (error) {
       console.error('Error convirtiendo:', error)
-      alert('Error al convertir archivos. Verifica que el JSON tenga el formato correcto.')
+      alert(t('pdf.alert.error'))
     } finally {
       setProcessing(false)
     }
@@ -225,7 +227,7 @@ function DocumentTools() {
         break
       case 'word-to-pdf':
       case 'excel-to-pdf':
-        alert('Esta función estará disponible próximamente')
+        alert(t('comingSoon.title'))
         break
     }
   }
@@ -243,26 +245,29 @@ function DocumentTools() {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">Herramientas de Documentos</h2>
+      <h2 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-slate-200 mb-4 sm:mb-6">{t('doc.title')}</h2>
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 mb-4 sm:mb-6">
         {tools.map((tool) => (
           <button
             key={tool.id}
             onClick={() => !tool.disabled && setActiveTool(tool.id)}
             disabled={tool.disabled}
-            className={`p-3 rounded-lg transition-all ${
+            className={`group relative p-3 sm:p-4 rounded-xl transition-all duration-200 ${
               activeTool === tool.id
-                ? 'bg-purple-600 text-white shadow-lg'
+                ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/25'
                 : tool.disabled
-                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-gray-200 dark:bg-slate-800/30 text-gray-400 dark:text-slate-600 cursor-not-allowed border border-gray-300 dark:border-slate-700/50'
+                : 'bg-gray-100 dark:bg-slate-700/50 text-slate-700 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-700 border border-gray-300 dark:border-slate-600/50'
             }`}
           >
-            <div className="text-2xl mb-1">{tool.icon}</div>
-            <div className="text-sm font-medium">{tool.name}</div>
+            <div className="text-xl sm:text-2xl mb-1 sm:mb-2">{tool.icon}</div>
+            <div className="text-[10px] sm:text-xs font-medium leading-tight">{tool.name}</div>
             {tool.disabled && (
-              <div className="text-xs mt-1 text-gray-400">Pronto</div>
+              <div className="text-[9px] sm:text-xs mt-0.5 sm:mt-1 opacity-75">{t('comingSoon.title')}</div>
+            )}
+            {activeTool === tool.id && !tool.disabled && (
+              <div className="absolute inset-0 rounded-xl border-2 border-white/20"></div>
             )}
           </button>
         ))}
@@ -272,10 +277,10 @@ function DocumentTools() {
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`border-2 border-dashed rounded-xl p-8 text-center mb-6 transition-all cursor-pointer ${
+        className={`relative border-2 border-dashed rounded-xl sm:rounded-2xl p-6 sm:p-8 md:p-12 text-center mb-4 sm:mb-6 transition-all duration-300 cursor-pointer ${
           isDragging
-            ? 'border-purple-600 bg-purple-50 scale-105'
-            : 'border-gray-300 hover:border-purple-400'
+            ? 'border-indigo-500 bg-indigo-500/10 scale-[1.02]'
+            : 'border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-800/30 hover:border-gray-400 dark:hover:border-slate-500 hover:bg-gray-100 dark:hover:bg-slate-800/50'
         }`}
         onClick={() => fileInputRef.current?.click()}
       >
@@ -287,27 +292,39 @@ function DocumentTools() {
           onChange={handleFileSelect}
           className="hidden"
         />
-        <div className="text-5xl mb-4">📁</div>
-        <p className="text-gray-600 mb-2 font-medium">
-          {isDragging ? '¡Suelta los archivos aquí!' : 'Arrastra archivos o haz clic para seleccionar'}
-        </p>
-        <p className="text-sm text-gray-400">
-          Formato soportado: {getAcceptedFormats()}
-        </p>
+        <div className="flex flex-col items-center gap-3 sm:gap-4">
+          <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl flex items-center justify-center transition-colors ${
+            isDragging ? 'bg-indigo-500/20' : 'bg-gray-200 dark:bg-slate-700/50'
+          }`}>
+            <svg className={`w-6 h-6 sm:w-8 sm:h-8 ${isDragging ? 'text-indigo-400' : 'text-slate-500 dark:text-slate-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+          </div>
+          <div>
+            <p className={`text-sm sm:text-base font-medium mb-1 ${isDragging ? 'text-indigo-400' : 'text-slate-900 dark:text-slate-200'}`}>
+              {isDragging ? t('doc.dropzone.drag') : t('doc.dropzone.browse')}
+            </p>
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-500">
+              {t('doc.dropzone.formats')}
+            </p>
+          </div>
+        </div>
       </div>
 
       {selectedFiles.length > 0 && (
-        <div className="mb-6">
-          <h3 className="font-semibold text-gray-700 mb-3">
-            Archivos seleccionados ({selectedFiles.length})
+        <div className="mb-4 sm:mb-6">
+          <h3 className="font-medium text-slate-700 dark:text-slate-300 mb-2 sm:mb-3 text-xs sm:text-sm">
+            {t('doc.selectedFiles')} ({selectedFiles.length})
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3">
             {selectedFiles.map((file, index) => (
-              <div key={index} className="bg-gray-50 p-3 rounded-lg flex items-center gap-3">
-                <div className="text-3xl">📄</div>
-                <div className="flex-1">
-                  <p className="text-sm text-gray-700 truncate">{file.name}</p>
-                  <p className="text-xs text-gray-400">
+              <div key={index} className="bg-gray-100 dark:bg-slate-800/50 p-3 sm:p-4 rounded-lg sm:rounded-xl flex items-center gap-2 sm:gap-3 border border-gray-300 dark:border-slate-700/50 hover:border-gray-400 dark:hover:border-slate-600 transition-colors">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gray-200 dark:bg-slate-700/50 rounded-lg flex items-center justify-center text-xl sm:text-2xl flex-shrink-0">
+                  📄
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs sm:text-sm text-slate-900 dark:text-slate-200 truncate font-medium">{file.name}</p>
+                  <p className="text-[10px] sm:text-xs text-slate-600 dark:text-slate-500 mt-0.5 sm:mt-1">
                     {(file.size / 1024).toFixed(2)} KB
                   </p>
                 </div>
@@ -320,9 +337,19 @@ function DocumentTools() {
       <button
         onClick={handleProcess}
         disabled={selectedFiles.length === 0 || processing}
-        className="w-full py-4 bg-purple-600 text-white rounded-xl font-semibold text-lg hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+        className="w-full py-3 sm:py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl text-sm sm:text-base font-semibold hover:from-indigo-600 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-400 dark:disabled:from-slate-700 dark:disabled:to-slate-700 disabled:cursor-not-allowed transition-all duration-200 shadow-lg shadow-indigo-500/25 disabled:shadow-none"
       >
-        {processing ? 'Procesando...' : 'Procesar Documentos'}
+        {processing ? (
+          <span className="flex items-center justify-center gap-2">
+            <svg className="animate-spin h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span className="truncate">{t('doc.processing')}</span>
+          </span>
+        ) : (
+          <span className="truncate">{t('doc.process.button')}</span>
+        )}
       </button>
     </div>
   )
