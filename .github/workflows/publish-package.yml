@@ -1,0 +1,140 @@
+name: Publish Windows Package
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g., 1.0.0)'
+        required: true
+        default: '1.0.0'
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  build-and-publish:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+          cache: 'npm'
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Tauri app
+        run: npm run tauri build
+        env:
+          TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+          TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+
+      - name: Get version
+        id: version
+        shell: bash
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/v}
+          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            VERSION="$(date +%Y.%m.%d)-dev"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+
+      - name: Prepare package metadata
+        shell: bash
+        run: |
+          mkdir -p package-metadata
+          cat > package-metadata/package.json << EOF
+          {
+            "name": "@${{ github.repository_owner }}/all-in-one-toolbox",
+            "version": "${{ steps.version.outputs.version }}",
+            "description": "All-in-One Toolbox - Windows Desktop Application",
+            "repository": {
+              "type": "git",
+              "url": "https://github.com/${{ github.repository }}.git"
+            },
+            "files": {
+              "windows-x64": {
+                "exe": "All-in-One-Toolbox_${{ steps.version.outputs.version }}_x64-setup.exe",
+                "msi": "All-in-One-Toolbox_${{ steps.version.outputs.version }}_x64_en-US.msi"
+              }
+            }
+          }
+          EOF
+          cat package-metadata/package.json
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name || format('v{0}', steps.version.outputs.version) }}
+          name: All-in-One Toolbox v${{ steps.version.outputs.version }}
+          body: |
+            ## 🚀 All-in-One Toolbox v${{ steps.version.outputs.version }}
+
+            ### 📦 Windows Installers
+
+            **Recommended for most users:**
+            - **NSIS Installer (.exe)** - Modern installer with automatic updates
+            - **MSI Installer (.msi)** - Traditional Windows installer
+
+            ### 📋 System Requirements
+            - Windows 10 (version 1809 or later) or Windows 11
+            - 64-bit processor
+
+            ### 🔧 Installation
+            1. Download the `.exe` or `.msi` file
+            2. Run the installer
+            3. Follow the installation wizard
+
+            ---
+            Built on: ${{ github.run_id }}
+          files: |
+            src-tauri/target/release/bundle/nsis/*.exe
+            src-tauri/target/release/bundle/msi/*.msi
+            package-metadata/package.json
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to GitHub Packages
+        shell: bash
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > .npmrc
+          echo "@${{ github.repository_owner }}:registry=https://npm.pkg.github.com" >> .npmrc
+
+          # Publish metadata package
+          cd package-metadata
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-installers-v${{ steps.version.outputs.version }}
+          path: |
+            src-tauri/target/release/bundle/nsis/*.exe
+            src-tauri/target/release/bundle/msi/*.msi
+          retention-days: 90

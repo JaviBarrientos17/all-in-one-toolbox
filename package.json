@@ -1,7 +1,17 @@
 {
-  "name": "all-in-one-toolbox",
+  "name": "@javibarrientos17/all-in-one-toolbox",
   "version": "1.0.0",
   "type": "module",
+  "description": "All-in-One Toolbox - A comprehensive desktop application for Windows with multiple utilities",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JaviBarrientos17/all-in-one-toolbox.git"
+  },
+  "author": "JaviBarrientos17",
+  "license": "MIT",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
