@@ -52,7 +52,7 @@ function PDFTools() {
       }
 
       const mergedPdfBytes = await mergedPdf.save()
-      const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' })
+      const blob = new Blob([mergedPdfBytes as BlobPart], { type: 'application/pdf' })
       saveAs(blob, 'merged.pdf')
 
       addToHistory(
@@ -148,7 +148,7 @@ function PDFTools() {
       copiedPages.forEach((page) => newPdf.addPage(page))
 
       const pdfBytes = await newPdf.save()
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' })
+      const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' })
       saveAs(blob, `extracted_${file.name}`)
 
       addToHistory(
@@ -210,7 +210,7 @@ function PDFTools() {
       })
 
       const pdfBytes = await pdf.save()
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' })
+      const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' })
       saveAs(blob, `rotated_${file.name}`)
 
       addToHistory(
