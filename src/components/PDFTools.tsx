@@ -4,6 +4,7 @@ import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
 import { useHistory } from '../hooks/useHistory'
 import { useLanguage } from '../contexts/LanguageContext'
+import { outputStorage } from '../utils/outputStorage'
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js`
 
@@ -53,6 +54,10 @@ function PDFTools() {
 
       const mergedPdfBytes = await mergedPdf.save()
       const blob = new Blob([mergedPdfBytes as BlobPart], { type: 'application/pdf' })
+      
+      // Save to output gallery
+      await outputStorage.saveOutput('merged.pdf', 'application/pdf', blob, 'pdf');
+      
       saveAs(blob, 'merged.pdf')
 
       addToHistory(
@@ -96,7 +101,12 @@ function PDFTools() {
       }
 
       const content = await zip.generateAsync({ type: 'blob' })
-      saveAs(content, `${file.name.replace('.pdf', '')}_split.zip`)
+      const zipName = `${file.name.replace('.pdf', '')}_split.zip`
+
+      // Save to output gallery
+      await outputStorage.saveOutput(zipName, 'application/zip', content, 'pdf');
+
+      saveAs(content, zipName)
 
       addToHistory(
         t('pdf.history.split'),
@@ -149,7 +159,12 @@ function PDFTools() {
 
       const pdfBytes = await newPdf.save()
       const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' })
-      saveAs(blob, `extracted_${file.name}`)
+      const outputName = `extracted_${file.name}`
+
+      // Save to output gallery
+      await outputStorage.saveOutput(outputName, 'application/pdf', blob, 'pdf');
+
+      saveAs(blob, outputName)
 
       addToHistory(
         'Extraer páginas de PDF',
@@ -211,7 +226,12 @@ function PDFTools() {
 
       const pdfBytes = await pdf.save()
       const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' })
-      saveAs(blob, `rotated_${file.name}`)
+      const outputName = `rotated_${file.name}`
+
+      // Save to output gallery
+      await outputStorage.saveOutput(outputName, 'application/pdf', blob, 'pdf');
+
+      saveAs(blob, outputName)
 
       addToHistory(
         'Rotar PDF',
