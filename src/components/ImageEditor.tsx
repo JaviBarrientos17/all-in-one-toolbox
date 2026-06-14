@@ -1,6 +1,8 @@
-import React, { useState, useRef, useEffect } from "react";
-import { storage } from "../utils/storage";
-import { useLanguage } from "../contexts/LanguageContext";
+import React, { useState, useRef, useEffect } from 'react';
+import { storage } from '../utils/storage';
+import { outputStorage } from '../utils/outputStorage';
+import { useLanguage } from '../contexts/LanguageContext';
+
 
 interface ImageEditorProps {
   file: File;
@@ -86,11 +88,21 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ file, onClose }) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const url = canvas.toDataURL("image/png");
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `edited_${file.name}`;
-    a.click();
+    canvas.toBlob(async (blob) => {
+      if (blob) {
+        const outputName = `edited_${file.name}`;
+        
+        // Save to output gallery
+        await outputStorage.saveOutput(outputName, "image/png", blob, 'image');
+
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = outputName;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+    }, "image/png");
   };
 
   const resetFilters = () => {

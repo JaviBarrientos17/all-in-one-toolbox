@@ -466,6 +466,15 @@ export const translations: Translations = {
     es: "No hay imagen seleccionada para editar",
     ca: "No hi ha cap imatge seleccionada per editar",
   },
+  // Output Gallery
+  "outputs.title": { en: "Processed Files", es: "Archivos Procesados", ca: "Fitxers Processats" },
+  "outputs.empty": { en: "No processed files yet", es: "Aún no hay archivos procesados", ca: "Encara no hi ha fitxers processats" },
+  "outputs.download": { en: "Download", es: "Descargar", ca: "Descarregar" },
+  "outputs.delete": { en: "Delete", es: "Eliminar", ca: "Eliminar" },
+  "outputs.clear": { en: "Clear All", es: "Limpiar Todo", ca: "Netejar-ho Tot" },
+  "outputs.category": { en: "Category", es: "Categoría", ca: "Categoria" },
+  "outputs.date": { en: "Date", es: "Fecha", ca: "Data" },
+  "outputs.tab": { en: "Outputs", es: "Descargas", ca: "Descàrregues" },
 };
 
 interface LanguageContextType {

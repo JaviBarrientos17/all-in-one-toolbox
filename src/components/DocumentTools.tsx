@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import { useHistory } from '../hooks/useHistory'
 import { useLanguage } from '../contexts/LanguageContext'
+import { outputStorage } from '../utils/outputStorage'
 
 type DocumentTool = 'word-to-pdf' | 'excel-to-pdf' | 'txt-to-pdf' | 'csv-to-json' | 'json-to-csv'
 
@@ -90,10 +91,15 @@ function DocumentTools() {
 
         const pdfBytes = await pdfDoc.save()
         const blob = new Blob([pdfBytes as BlobPart], { type: 'application/pdf' })
+        const outputName = file.name.replace(/\.[^/.]+$/, '.pdf')
+
+        // Save to output gallery
+        await outputStorage.saveOutput(outputName, 'application/pdf', blob, 'document');
+
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
-        a.download = file.name.replace(/\.[^/.]+$/, '.pdf')
+        a.download = outputName
         a.click()
         URL.revokeObjectURL(url)
       }
@@ -140,10 +146,15 @@ function DocumentTools() {
 
         const jsonString = JSON.stringify(data, null, 2)
         const blob = new Blob([jsonString], { type: 'application/json' })
+        const outputName = file.name.replace(/\.[^/.]+$/, '.json')
+
+        // Save to output gallery
+        await outputStorage.saveOutput(outputName, 'application/json', blob, 'document');
+
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
-        a.download = file.name.replace(/\.[^/.]+$/, '.json')
+        a.download = outputName
         a.click()
         URL.revokeObjectURL(url)
       }
@@ -192,10 +203,15 @@ function DocumentTools() {
 
         const csvString = csvLines.join('\n')
         const blob = new Blob([csvString], { type: 'text/csv' })
+        const outputName = file.name.replace(/\.[^/.]+$/, '.csv')
+
+        // Save to output gallery
+        await outputStorage.saveOutput(outputName, 'text/csv', blob, 'document');
+
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
-        a.download = file.name.replace(/\.[^/.]+$/, '.csv')
+        a.download = outputName
         a.click()
         URL.revokeObjectURL(url)
       }

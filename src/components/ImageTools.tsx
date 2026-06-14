@@ -5,10 +5,12 @@ import CompressionSettings, { CompressionOptions } from "./CompressionSettings";
 import WatermarkTool from "./WatermarkTool";
 import ResizeModal from "./ResizeModal";
 import ConvertModal from "./ConvertModal";
-import RotateModal from "./RotateModal";
-import ImageEditor from "./ImageEditor";
-import { useHistory } from "../hooks/useHistory";
-import { useLanguage } from "../contexts/LanguageContext";
+import RotateModal from './RotateModal'
+import ImageEditor from './ImageEditor'
+import { useHistory } from '../hooks/useHistory'
+import { useLanguage } from '../contexts/LanguageContext'
+import { outputStorage } from '../utils/outputStorage'
+
 
 type ImageTool =
   | "compress"
@@ -73,11 +75,14 @@ function ImageTools() {
 
     try {
       for (let i = 0; i < selectedFiles.length; i++) {
-        const file = selectedFiles[i];
-        const compressedFile = await imageCompression(file, options);
+        const file = selectedFiles[i]
+        const compressedFile = await imageCompression(file, options)
 
-        const url = URL.createObjectURL(compressedFile);
-        const a = document.createElement("a");
+        // Save to output gallery
+        await outputStorage.saveOutput(`compressed_${file.name}`, compressedFile.type, compressedFile, 'image');
+
+        const url = URL.createObjectURL(compressedFile)
+        const a = document.createElement('a')
         a.href = url;
         a.download = `compressed_${file.name}`;
         a.click();
@@ -127,8 +132,11 @@ function ImageTools() {
             if (ctx) {
               ctx.drawImage(img, 0, 0, width, height);
 
-              canvas.toBlob((blob) => {
+              canvas.toBlob(async (blob) => {
                 if (blob) {
+                  // Save to output gallery
+                  await outputStorage.saveOutput(`resized_${file.name}`, file.type, blob, 'image');
+
                   const url = URL.createObjectURL(blob);
                   const a = document.createElement("a");
                   a.href = url;
@@ -173,6 +181,8 @@ function ImageTools() {
 
     try {
       for (const file of selectedFiles) {
+        const nameWithoutExt = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+        const newName = `${nameWithoutExt}.${format}`;
         const img = new Image();
         const reader = new FileReader();
 
@@ -189,14 +199,13 @@ function ImageTools() {
               ctx.drawImage(img, 0, 0);
 
               canvas.toBlob(
-                (blob) => {
+                async (blob) => {
                   if (blob) {
+                    // Save to output gallery
+                    await outputStorage.saveOutput(`converted_${newName}`, mimeType, blob, 'image');
+
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement("a");
-                    const newName = file.name.replace(
-                      /\.[^/.]+$/,
-                      `.${format}`,
-                    );
                     a.href = url;
                     a.download = `converted_${newName}`;
                     a.click();
@@ -264,8 +273,11 @@ function ImageTools() {
               ctx.rotate((rotation * Math.PI) / 180);
               ctx.drawImage(img, -img.width / 2, -img.height / 2);
 
-              canvas.toBlob((blob) => {
+              canvas.toBlob(async (blob) => {
                 if (blob) {
+                  // Save to output gallery
+                  await outputStorage.saveOutput(`rotated_${file.name}`, file.type, blob, 'image');
+
                   const url = URL.createObjectURL(blob);
                   const a = document.createElement("a");
                   a.href = url;
