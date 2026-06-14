@@ -283,13 +283,13 @@ const ImageEditor: React.FC<ImageEditorProps> = ({ file, onClose }) => {
             )}
           </div>
           <div className="flex items-center gap-3 w-full sm:w-auto">
-            <button
+            {/* <button
               onClick={handleSaveDraft}
               disabled={isSaving}
               className="flex-1 sm:flex-none px-6 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-900 dark:text-white rounded-xl text-sm font-semibold transition-all"
             >
               {isSaving ? "..." : t("editor.draft.save")}
-            </button>
+            </button> */}
             <button
               onClick={handleDownload}
               className="flex-1 sm:flex-none px-6 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl text-sm font-semibold hover:from-indigo-600 hover:to-purple-700 transition-all shadow-lg shadow-indigo-500/25"
