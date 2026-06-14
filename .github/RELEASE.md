@@ -4,7 +4,7 @@
 
 ### Option 1: Using Git Tags (Recommended)
 
-1. Update version in `package.json` and `src-tauri/tauri.conf.json`
+1. Update version in `package.json`
 2. Create and push a tag:
    ```bash
    git tag v1.0.0
@@ -24,12 +24,11 @@
 The workflow creates:
 
 1. **GitHub Release** with:
-   - Windows NSIS Installer (`.exe`) - Recommended for most users
-   - Windows MSI Installer (`.msi`) - Traditional installer
    - Release notes
+   - Package metadata
 
 2. **GitHub Packages** with:
-   - Package metadata listing available installers
+   - Package metadata
    - Visible in the repository's Packages section
 
 ## Version Numbering
@@ -44,14 +43,4 @@ Examples: `1.0.0`, `1.1.0`, `1.1.1`
 
 ## System Requirements
 
-- Windows 10 (version 1809+) or Windows 11
-- 64-bit processor
-
-## Installers Comparison
-
-| Installer | Format | Auto-update | Corporate | Size |
-|-----------|--------|-------------|-----------|------|
-| NSIS      | `.exe` | ✅ Yes      | ⚠️ Maybe  | Smaller |
-| MSI       | `.msi` | ❌ No       | ✅ Yes    | Larger |
-
-**Recommendation**: Use NSIS (`.exe`) for regular users, MSI for enterprise deployments.
+This is a web-based application, no specific system requirements needed. Access through any modern browser.

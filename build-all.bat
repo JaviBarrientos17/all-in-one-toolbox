@@ -72,15 +72,15 @@ if %errorlevel% neq 0 (
 for /f "tokens=*" %%i in ('rustc --version') do set RUST_VERSION=%%i
 echo [OK] Rust instalado: %RUST_VERSION%
 
-REM Construir version escritorio
+REM Build web version
 echo.
-echo [7/7] Construyendo version escritorio...
-echo Esto puede tomar varios minutos...
-call npm run tauri:build
+echo [6/6] Building web version...
+echo Running build...
+call npm run build
 if %errorlevel% neq 0 (
-    echo [ERROR] Error construyendo version escritorio
+    echo [ERROR] Error building web version
 ) else (
-    echo [OK] Version escritorio construida en src-tauri/target/release/bundle/
+    echo [OK] Web version built in dist/
 )
 
 :summary
@@ -90,12 +90,10 @@ echo [OK] Construccion completada
 echo.
 echo Archivos generados:
 echo   - dist/                    (Version web^)
-echo   - src-tauri/target/...     (Version escritorio, si Rust esta instalado^)
-echo   - progress-reports/        (Reportes de progreso^)
+echo   - progress-reports/        (Progress reports^)
 echo.
-echo Siguiente paso:
-echo   - Version web: Despliega la carpeta 'dist/' en cualquier servidor web
-echo   - Version escritorio: Instalador en src-tauri/target/release/bundle/
+echo Next step:
+echo   - Web version: Deploy the 'dist/' folder to any web server
 echo.
 echo All-in-One Toolbox - Ready to deploy!
 echo ========================================================

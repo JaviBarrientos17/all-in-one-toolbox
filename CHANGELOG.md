@@ -42,11 +42,6 @@ Todos los cambios notables del proyecto se documentan en este archivo.
 - Estado de funcionalidades implementadas
 - Próximas tareas planificadas
 
-#### Configuración de Escritorio
-- Configuración base de Tauri para Windows 10/11
-- Archivos Rust para backend nativo
-- Configuración de empaquetado (MSI, NSIS)
-
 ### 📚 Documentación
 - README completo con instrucciones de uso
 - Guía de usuario interactiva (HTML)

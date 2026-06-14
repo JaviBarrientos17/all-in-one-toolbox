@@ -34,20 +34,14 @@ git push origin main
 git push origin v1.0.1
 
 # ¡Listo! GitHub Actions generará automáticamente:
-# - Instalador MSI
-# - Instalador NSIS (EXE)
-# - GitHub Release con los instaladores
+# - GitHub Release con release notes
 ```
 
 #### Opción B: Manual
 ```bash
 # Build local
 npm install
-npm run tauri:build
-
-# Los instaladores estarán en:
-# src-tauri/target/release/bundle/msi/*.msi
-# src-tauri/target/release/bundle/nsis/*.exe
+npm run build
 ```
 
 ---

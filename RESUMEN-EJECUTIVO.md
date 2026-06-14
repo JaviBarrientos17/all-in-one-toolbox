@@ -59,10 +59,6 @@ All-in-One Toolbox es una suite completa de herramientas para procesamiento de a
 - `jszip` - Empaquetado de archivos
 - `file-saver` - Descarga de archivos
 
-### Desktop (Tauri)
-- 🦀 **Rust** backend
-- 🪟 **Compatible** con Windows 10/11
-- 📦 Empaquetado MSI y NSIS configurado
 
 ---
 
@@ -117,12 +113,8 @@ all-in-one-toolbox/
 │   │   └── useHistory.ts    # Hook para historial
 │   ├── App.tsx              # Componente principal
 │   └── main.tsx
-├── src-tauri/               # Configuración Tauri
-│   ├── src/main.rs
-│   ├── Cargo.toml
-│   └── tauri.conf.json
 ├── public/
-│   └── index.html           # Guía de usuario
+│   └── guide.html           # Guía de usuario
 ├── progress-reports/         # Reportes automáticos
 ├── generate-report.js        # Generador de reportes
 ├── auto-report.js           # Sistema automático
@@ -147,14 +139,12 @@ all-in-one-toolbox/
 - [x] Preview de imágenes
 - [x] Configuración avanzada
 - [x] Sistema de reportes automáticos
-- [x] Configuración Tauri básica
 - [x] Documentación completa
 - [x] Guía de usuario interactiva
 
 ### ⏳ En Desarrollo
 - [ ] Recorte interactivo de imágenes
 - [ ] Compresión avanzada de PDF
-- [ ] Compilación de aplicación de escritorio
 
 ### 🔮 Planificado (v2.0)
 - [ ] Herramientas de video
@@ -176,16 +166,6 @@ http://localhost:1420
 
 # Si necesitas iniciarlo:
 npm run dev
-```
-
-### Versión Escritorio (Requiere Compilación)
-
-```bash
-# Requisitos: Node.js 20+ y Rust
-npm run tauri:build
-
-# El instalador se genera en:
-src-tauri/target/release/bundle/
 ```
 
 ---

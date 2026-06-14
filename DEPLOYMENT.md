@@ -17,45 +17,6 @@ Se incluye automáticamente el archivo `_headers` con políticas de seguridad.
 
 ---
 
-## 🪟 Windows Installer (Desktop App)
-
-### Generar Instalador Manualmente:
-
-```bash
-# Instalar dependencias
-npm install
-
-# Compilar aplicación de Tauri
-npm run tauri build
-```
-
-Los instaladores se generarán en:
-- **MSI**: `src-tauri/target/release/bundle/msi/`
-- **NSIS (EXE)**: `src-tauri/target/release/bundle/nsis/`
-
-### Generar Instalador con GitHub Actions:
-
-#### Opción 1: Release con Versión Tag
-```bash
-# Crear y pushear un tag de versión
-git tag v1.0.1
-git push origin v1.0.1
-```
-Esto automáticamente:
-- ✅ Compila la aplicación
-- ✅ Genera instaladores MSI y NSIS
-- ✅ Crea una GitHub Release
-- ✅ Sube los instaladores a la release
-
-#### Opción 2: Build Manual desde GitHub
-1. Ve a **Actions** en tu repositorio
-2. Selecciona **"Release Windows Installer"**
-3. Click en **"Run workflow"**
-4. Selecciona la rama
-5. Click **"Run workflow"**
-
----
-
 ## 📋 Versionado
 
 ### Estructura de Versiones:
@@ -65,7 +26,7 @@ Esto automáticamente:
 
 ### Actualizar Versión:
 
-1. Actualizar `package.json` y `src-tauri/tauri.conf.json`
+1. Actualizar `package.json`
 2. Crear tag y push:
 
 ```bash
@@ -82,4 +43,3 @@ git push origin v1.0.1
 
 - Node.js 22.16.0
 - npm 10.9.2
-- Rust (para builds de Tauri)
