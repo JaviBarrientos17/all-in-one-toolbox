@@ -40,18 +40,9 @@ packageJson.version = newVersion;
 fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2) + '\n');
 console.log('✅ Updated package.json');
 
-// Update tauri.conf.json
-const tauriConfigPath = path.join(__dirname, 'src-tauri', 'tauri.conf.json');
-if (fs.existsSync(tauriConfigPath)) {
-  const tauriConfig = JSON.parse(fs.readFileSync(tauriConfigPath, 'utf8'));
-  tauriConfig.version = newVersion;
-  fs.writeFileSync(tauriConfigPath, JSON.stringify(tauriConfig, null, 2) + '\n');
-  console.log('✅ Updated tauri.conf.json');
-}
-
 // Git operations
 try {
-  execSync('git add package.json src-tauri/tauri.conf.json', { stdio: 'inherit' });
+  execSync('git add package.json', { stdio: 'inherit' });
   execSync(`git commit -m "chore: bump version to ${newVersion}"`, { stdio: 'inherit' });
   execSync(`git tag v${newVersion}`, { stdio: 'inherit' });
   console.log(`\n✅ Version bumped to ${newVersion}`);

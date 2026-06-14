@@ -67,41 +67,27 @@ else
     echo -e "${RED}⚠${NC} Error generando reporte (no crítico)"
 fi
 
-# Verificar Rust para Tauri
+# Build web version
 echo ""
-echo -e "${BLUE}[6/7]${NC} Verificando Rust (para versión escritorio)..."
-if command_exists cargo; then
-    RUST_VERSION=$(rustc --version)
-    echo -e "${GREEN}✓${NC} Rust instalado: $RUST_VERSION"
-
-    # Intentar construir versión escritorio
-    echo ""
-    echo -e "${BLUE}[7/7]${NC} Construyendo versión escritorio..."
-    echo "Esto puede tomar varios minutos..."
-    npm run tauri:build
-    if [ $? -eq 0 ]; then
-        echo -e "${GREEN}✓${NC} Versión escritorio construida en src-tauri/target/release/bundle/"
-    else
-        echo -e "${RED}✗${NC} Error construyendo versión escritorio"
-    fi
+echo -e "${BLUE}[6/6]${NC} Building web version..."
+echo "Running build..."
+npm run build
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}✓${NC} Web version built in dist/"
 else
-    echo -e "${RED}✗${NC} Rust no está instalado"
-    echo "  Instala Rust desde: https://rustup.rs/"
-    echo "  Saltando construcción de versión escritorio..."
+    echo -e "${RED}✗${NC} Error building web version"
 fi
 
-# Resumen final
+# Final summary
 echo ""
 echo "========================================================"
 echo -e "${GREEN}✅ Construcción completada${NC}"
 echo ""
 echo "📁 Archivos generados:"
 echo "  - dist/                    (Versión web)"
-echo "  - src-tauri/target/...     (Versión escritorio, si Rust está instalado)"
-echo "  - progress-reports/        (Reportes de progreso)"
+echo "  - progress-reports/        (Progress reports)"
 echo ""
 echo "🚀 Siguiente paso:"
 echo "  - Versión web: Despliega la carpeta 'dist/' en cualquier servidor web"
-echo "  - Versión escritorio: Instalador en src-tauri/target/release/bundle/"
 echo ""
 echo "💜 All-in-One Toolbox - Ready to deploy!"

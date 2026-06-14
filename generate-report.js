@@ -278,10 +278,6 @@ const generateReport = () => {
           <span>Sistema de reportes automáticos cada hora</span>
         </li>
         <li>
-          <span class="status-badge status-progress">⏳ En Progreso</span>
-          <span>Configuración de Tauri para aplicación de escritorio</span>
-        </li>
-        <li>
           <span class="status-badge status-pending">⏸ Pendiente</span>
           <span>Herramientas de Video (conversión, comprimir, GIF)</span>
         </li>
@@ -319,10 +315,6 @@ const generateReport = () => {
           <p>📸 Versión Web</p>
           <p style="font-size: 0.9rem; margin-top: 0.5rem;">Servidor iniciado en http://localhost:1420</p>
         </div>
-        <div class="screenshot-placeholder">
-          <p>🖥️ Versión Escritorio</p>
-          <p style="font-size: 0.9rem; margin-top: 0.5rem;">Pendiente: Configuración de Tauri</p>
-        </div>
       </div>
     </div>
 
@@ -331,7 +323,6 @@ const generateReport = () => {
       <div class="next-steps">
         <h3>Siguientes Tareas:</h3>
         <ul>
-          <li>Configurar Tauri para empaquetado de escritorio Windows 10/11</li>
           <li>Añadir drag & drop para archivos</li>
           <li>Implementar preview de imágenes antes de procesar</li>
           <li>Agregar más formatos de imagen (HEIC, TIFF, BMP)</li>
@@ -353,7 +344,6 @@ const generateReport = () => {
         <li>🖼️ browser-image-compression (Compresión imágenes)</li>
         <li>📦 JSZip (Manejo de archivos)</li>
         <li>💾 file-saver (Descarga de archivos)</li>
-        <li>🪟 Tauri (Aplicación escritorio - Pendiente)</li>
       </ul>
     </div>
 

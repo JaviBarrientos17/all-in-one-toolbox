@@ -71,8 +71,6 @@ npm install
 # Ejecutar en modo desarrollo (Web)
 npm run dev
 
-# Ejecutar aplicación de escritorio (Tauri)
-npm run tauri:dev
 ```
 
 ### Compilar para Producción
@@ -80,9 +78,6 @@ npm run tauri:dev
 ```bash
 # Build para web
 npm run build
-
-# Build para escritorio (Windows)
-npm run tauri:build
 ```
 
 ---
@@ -109,8 +104,7 @@ git push origin v1.0.1
 ### Método Manual
 
 1. Actualizar versión en `package.json`
-2. Actualizar versión en `src-tauri/tauri.conf.json`
-3. Crear commit y tag:
+2. Crear commit y tag:
 
 ```bash
 git add .
@@ -135,6 +129,7 @@ git push origin v1.0.1
 
 - 🇬🇧 English
 - 🇪🇸 Español
+- 🇨🇦 Català
 
 ---
 
@@ -193,7 +188,6 @@ Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) par
 
 ## 🙏 Agradecimientos
 
-- [Tauri](https://tauri.app/) - Framework para aplicaciones de escritorio
 - [React](https://react.dev/) - Biblioteca de UI
 - [Vite](https://vitejs.dev/) - Build tool
 - [Tailwind CSS](https://tailwindcss.com/) - Framework de CSS
