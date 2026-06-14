@@ -47,7 +47,7 @@ Descarga el instalador desde [GitHub Releases](https://github.com/JaviBarrientos
 
 ### Opción 2: Aplicación Web
 
-Visita: [all-in-one-toolbox.pages.dev](https://all-in-one-toolbox.pages.dev)
+Visita: [https://all-in-one-toolbox.javierbarrientos2010.workers.dev/](https://all-in-one-toolbox.javierbarrientos2010.workers.dev/)
 
 ---
 
@@ -202,4 +202,4 @@ Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) par
 
 ---
 
-**Made with ❤️ by Javi Barrientos**
+**Made by Javi Barrientos**
