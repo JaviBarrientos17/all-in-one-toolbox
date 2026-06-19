@@ -1,0 +1,15 @@
+[
+  {
+    "id": "1",
+    "title": "Nueva herramienta: Convertidor HEIC",
+    "body": "Ahora puedes convertir fotos HEIC a JPG directamente en el navegador.",
+    "date": "2026-06-19",
+    "url": "/guide.html#heic"
+  },
+  {
+    "id": "2",
+    "title": "Mejoras en la galería de salidas",
+    "body": "Se ha optimizado el rendimiento y la UI para listas grandes.",
+    "date": "2026-06-10"
+  }
+]

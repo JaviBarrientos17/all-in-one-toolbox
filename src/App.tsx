@@ -4,6 +4,7 @@ import PDFTools from './components/PDFTools'
 import DocumentTools from './components/DocumentTools'
 import OutputGallery from './components/OutputGallery'
 import History from './components/History'
+import NewsBanner from './components/NewsBanner'
 import { useTheme } from './contexts/ThemeContext'
 import { useLanguage } from './contexts/LanguageContext'
 
@@ -233,6 +234,7 @@ function App() {
       </header>
 
       <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
+        <NewsBanner />
         {/* Tabs de categorías */}
         <div className="mb-4 sm:mb-6 md:mb-8">
           <nav className="flex gap-1 sm:gap-2 p-1 bg-white dark:bg-slate-800/50 rounded-xl border border-gray-200 dark:border-slate-700/50 backdrop-blur-sm shadow-lg overflow-x-auto">
