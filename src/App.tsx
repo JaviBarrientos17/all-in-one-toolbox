@@ -1,32 +1,46 @@
 import { useState, useEffect } from "react";
-import ImageTools from './components/ImageTools'
-import PDFTools from './components/PDFTools'
-import DocumentTools from './components/DocumentTools'
-import OutputGallery from './components/OutputGallery'
-import History from './components/History'
-import { useTheme } from './contexts/ThemeContext'
-import { useLanguage } from './contexts/LanguageContext'
+import ImageTools from "./components/ImageTools";
+import PDFTools from "./components/PDFTools";
+import DocumentTools from "./components/DocumentTools";
+import OutputGallery from "./components/OutputGallery";
+import History from "./components/History";
+import { useTheme } from "./contexts/ThemeContext";
+import { useLanguage } from "./contexts/LanguageContext";
 
-type ToolCategory = 'image' | 'pdf' | 'video' | 'document' | 'output'
+type ToolCategory = "image" | "pdf" | "video" | "document" | "output";
 
 function App() {
-  const [activeCategory, setActiveCategory] = useState<ToolCategory>('image')
-  const [showHistory, setShowHistory] = useState(false)
-  const [showLanguageMenu, setShowLanguageMenu] = useState(false)
-  const { theme, toggleTheme } = useTheme()
-  const { language, setLanguage, t } = useLanguage()
+  const [activeCategory, setActiveCategory] = useState<ToolCategory>("image");
+  const [showHistory, setShowHistory] = useState(false);
+  const [showLanguageMenu, setShowLanguageMenu] = useState(false);
+  const { theme, toggleTheme } = useTheme();
+  const { language, setLanguage, t } = useLanguage();
+  const [currentYear, setCurrentYear] = useState<number>(() =>
+    new Date().getFullYear(),
+  );
 
   useEffect(() => {
-    document.title = t('app.pageTitle')
-  }, [language, t])
+    document.title = t("app.pageTitle");
+  }, [language, t]);
+
+  useEffect(() => {
+    const updateYear = () => setCurrentYear(new Date().getFullYear());
+    // check once per minute and update if the year changed (covers year rollover)
+    const id = setInterval(updateYear, 60 * 1000);
+    return () => clearInterval(id);
+  }, []);
 
   const categories = [
-    { id: 'image' as ToolCategory, name: t('category.image'), icon: '🖼️' },
-    { id: 'pdf' as ToolCategory, name: t('category.pdf'), icon: '📄' },
-    { id: 'video' as ToolCategory, name: t('category.video'), icon: '🎬' },
-    { id: 'document' as ToolCategory, name: t('category.document'), icon: '📝' },
-    { id: 'output' as ToolCategory, name: t('outputs.tab'), icon: '📥' },
-  ]
+    { id: "image" as ToolCategory, name: t("category.image"), icon: "🖼️" },
+    { id: "pdf" as ToolCategory, name: t("category.pdf"), icon: "📄" },
+    // { id: 'video' as ToolCategory, name: t('category.video'), icon: '🎬' },
+    {
+      id: "document" as ToolCategory,
+      name: t("category.document"),
+      icon: "📝",
+    },
+    { id: "output" as ToolCategory, name: t("outputs.tab"), icon: "📥" },
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 transition-colors duration-300">
@@ -300,6 +314,9 @@ function App() {
               />
             </svg>
             <span className="break-words">{t("footer.privacy")}</span>
+          </p>
+          <p className="flex items-center justify-center gap-2">
+            <span className="break-words font-bold">© {currentYear}</span>
           </p>
         </footer>
       </div>

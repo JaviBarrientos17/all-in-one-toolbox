@@ -8,8 +8,8 @@ import ConvertModal from "./ConvertModal";
 import RotateModal from "./RotateModal";
 import CropModal from "./CropModal";
 import ImageEditor from "./ImageEditor";
-import Upscaler from "upscaler"; // <-- AÑADIDO
-import UpscaleModal from "./UpscaleModal"; // <-- AÑADIDO
+import Upscaler from "upscaler";
+import UpscaleModal from "./UpscaleModal";
 import { useHistory } from "../hooks/useHistory";
 import { useLanguage } from "../contexts/LanguageContext";
 import { outputStorage } from "../utils/outputStorage";
@@ -80,9 +80,9 @@ function ImageTools() {
     { id: "resize" as ImageTool, name: t("image.resize"), icon: "📐" },
     { id: "convert" as ImageTool, name: t("image.convert"), icon: "🔄" },
     { id: "rotate" as ImageTool, name: t("image.rotate"), icon: "↻" },
+    { id: "crop" as ImageTool, name: t("image.crop"), icon: "✂️" },
     { id: "watermark" as ImageTool, name: t("image.watermark"), icon: "©️" },
     { id: "editor" as ImageTool, name: t("editor.title"), icon: "📸" },
-    { id: "crop" as ImageTool, name: t("image.crop"), icon: "✂️" },
     {
       id: "upscale" as ImageTool,
       name: "Upscale (IA)",
@@ -372,10 +372,20 @@ function ImageTools() {
     }
   };
 
-  const handleCrop = async (x?: number, y?: number, width?: number, height?: number) => {
+  const handleCrop = async (
+    x?: number,
+    y?: number,
+    width?: number,
+    height?: number,
+  ) => {
     if (selectedFiles.length === 0) return;
 
-    if (x === undefined || y === undefined || width === undefined || height === undefined) {
+    if (
+      x === undefined ||
+      y === undefined ||
+      width === undefined ||
+      height === undefined
+    ) {
       setShowCropModal(true);
       return;
     }
@@ -428,7 +438,7 @@ function ImageTools() {
                 0,
                 0,
                 cropWidth,
-                cropHeight
+                cropHeight,
               );
 
               canvas.toBlob(async (blob) => {
