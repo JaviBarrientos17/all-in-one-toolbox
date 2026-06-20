@@ -5,12 +5,14 @@ import CompressionSettings, { CompressionOptions } from "./CompressionSettings";
 import WatermarkTool from "./WatermarkTool";
 import ResizeModal from "./ResizeModal";
 import ConvertModal from "./ConvertModal";
-import RotateModal from './RotateModal'
-import ImageEditor from './ImageEditor'
-import { useHistory } from '../hooks/useHistory'
-import { useLanguage } from '../contexts/LanguageContext'
-import { outputStorage } from '../utils/outputStorage'
-
+import RotateModal from "./RotateModal";
+import CropModal from "./CropModal";
+import ImageEditor from "./ImageEditor";
+import Upscaler from "upscaler"; // <-- AÑADIDO
+import UpscaleModal from "./UpscaleModal"; // <-- AÑADIDO
+import { useHistory } from "../hooks/useHistory";
+import { useLanguage } from "../contexts/LanguageContext";
+import { outputStorage } from "../utils/outputStorage";
 
 type ImageTool =
   | "compress"
@@ -19,7 +21,38 @@ type ImageTool =
   | "rotate"
   | "crop"
   | "watermark"
-  | "editor";
+  | "editor"
+  | "upscale";
+
+// Detectar si el usuario está en un dispositivo móvil
+const isMobileDevice = () => {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent,
+  );
+};
+
+// Preguntar a la tarjeta gráfica su capacidad máxima para asignar el mejor patchSize
+const getOptimalPatchSize = () => {
+  try {
+    const canvas = document.createElement("canvas");
+    const gl =
+      canvas.getContext("webgl") ||
+      (canvas.getContext("experimental-webgl") as WebGLRenderingContext);
+
+    if (gl) {
+      const maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+      // Asignación dinámica según la potencia de la GPU
+      if (maxTextureSize >= 16384) return 256; // GPUs dedicadas potentes (NVIDIA/AMD)
+      if (maxTextureSize >= 8192) return 128; // GPUs integradas modernas / MacBooks
+      return 64; // GPUs básicas o antiguas
+    }
+  } catch (error) {
+    console.warn(
+      "No se pudo detectar WebGL, usando patchSize seguro por defecto.",
+    );
+  }
+  return 64; // Fallback ultraseguro
+};
 
 function ImageTools() {
   const [activeTool, setActiveTool] = useState<ImageTool>("compress");
@@ -32,10 +65,15 @@ function ImageTools() {
   const [showResizeModal, setShowResizeModal] = useState(false);
   const [showConvertModal, setShowConvertModal] = useState(false);
   const [showRotateModal, setShowRotateModal] = useState(false);
+  const [showCropModal, setShowCropModal] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
+  const [showUpscaleModal, setShowUpscaleModal] = useState(false);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { addToHistory } = useHistory();
   const { t } = useLanguage();
+
+  const isMobile = isMobileDevice();
 
   const tools = [
     { id: "compress" as ImageTool, name: t("image.compress"), icon: "🗜️" },
@@ -45,6 +83,12 @@ function ImageTools() {
     { id: "watermark" as ImageTool, name: t("image.watermark"), icon: "©️" },
     { id: "editor" as ImageTool, name: t("editor.title"), icon: "📸" },
     { id: "crop" as ImageTool, name: t("image.crop"), icon: "✂️" },
+    {
+      id: "upscale" as ImageTool,
+      name: "Upscale (IA)",
+      icon: "✨",
+      disabled: isMobile,
+    },
   ];
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,14 +119,19 @@ function ImageTools() {
 
     try {
       for (let i = 0; i < selectedFiles.length; i++) {
-        const file = selectedFiles[i]
-        const compressedFile = await imageCompression(file, options)
+        const file = selectedFiles[i];
+        const compressedFile = await imageCompression(file, options);
 
         // Save to output gallery
-        await outputStorage.saveOutput(`compressed_${file.name}`, compressedFile.type, compressedFile, 'image');
+        await outputStorage.saveOutput(
+          `compressed_${file.name}`,
+          compressedFile.type,
+          compressedFile,
+          "image",
+        );
 
-        const url = URL.createObjectURL(compressedFile)
-        const a = document.createElement('a')
+        const url = URL.createObjectURL(compressedFile);
+        const a = document.createElement("a");
         a.href = url;
         a.download = `compressed_${file.name}`;
         a.click();
@@ -135,7 +184,12 @@ function ImageTools() {
               canvas.toBlob(async (blob) => {
                 if (blob) {
                   // Save to output gallery
-                  await outputStorage.saveOutput(`resized_${file.name}`, file.type, blob, 'image');
+                  await outputStorage.saveOutput(
+                    `resized_${file.name}`,
+                    file.type,
+                    blob,
+                    "image",
+                  );
 
                   const url = URL.createObjectURL(blob);
                   const a = document.createElement("a");
@@ -181,7 +235,8 @@ function ImageTools() {
 
     try {
       for (const file of selectedFiles) {
-        const nameWithoutExt = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+        const nameWithoutExt =
+          file.name.substring(0, file.name.lastIndexOf(".")) || file.name;
         const newName = `${nameWithoutExt}.${format}`;
         const img = new Image();
         const reader = new FileReader();
@@ -202,7 +257,12 @@ function ImageTools() {
                 async (blob) => {
                   if (blob) {
                     // Save to output gallery
-                    await outputStorage.saveOutput(`converted_${newName}`, mimeType, blob, 'image');
+                    await outputStorage.saveOutput(
+                      `converted_${newName}`,
+                      mimeType,
+                      blob,
+                      "image",
+                    );
 
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement("a");
@@ -276,7 +336,12 @@ function ImageTools() {
               canvas.toBlob(async (blob) => {
                 if (blob) {
                   // Save to output gallery
-                  await outputStorage.saveOutput(`rotated_${file.name}`, file.type, blob, 'image');
+                  await outputStorage.saveOutput(
+                    `rotated_${file.name}`,
+                    file.type,
+                    blob,
+                    "image",
+                  );
 
                   const url = URL.createObjectURL(blob);
                   const a = document.createElement("a");
@@ -307,6 +372,104 @@ function ImageTools() {
     }
   };
 
+  const handleCrop = async (x?: number, y?: number, width?: number, height?: number) => {
+    if (selectedFiles.length === 0) return;
+
+    if (x === undefined || y === undefined || width === undefined || height === undefined) {
+      setShowCropModal(true);
+      return;
+    }
+
+    setShowCropModal(false);
+    setProcessing(true);
+
+    try {
+      for (const file of selectedFiles) {
+        const img = new Image();
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+          img.src = e.target?.result as string;
+
+          img.onload = () => {
+            // Determine if values are in percentages or pixels
+            let cropX = x;
+            let cropY = y;
+            let cropWidth = width;
+            let cropHeight = height;
+
+            // Convert percentages to pixels if needed
+            if (x < 2 && y < 2 && width < 2 && height < 2) {
+              // Assuming values are percentages if all are < 2 (represents %)
+              cropX = (x / 100) * img.width;
+              cropY = (y / 100) * img.height;
+              cropWidth = (width / 100) * img.width;
+              cropHeight = (height / 100) * img.height;
+            }
+
+            // Ensure values don't exceed image boundaries
+            cropX = Math.max(0, Math.min(cropX, img.width - cropWidth));
+            cropY = Math.max(0, Math.min(cropY, img.height - cropHeight));
+            cropWidth = Math.max(1, Math.min(cropWidth, img.width - cropX));
+            cropHeight = Math.max(1, Math.min(cropHeight, img.height - cropY));
+
+            const canvas = document.createElement("canvas");
+            canvas.width = cropWidth;
+            canvas.height = cropHeight;
+            const ctx = canvas.getContext("2d");
+
+            if (ctx) {
+              ctx.drawImage(
+                img,
+                cropX,
+                cropY,
+                cropWidth,
+                cropHeight,
+                0,
+                0,
+                cropWidth,
+                cropHeight
+              );
+
+              canvas.toBlob(async (blob) => {
+                if (blob) {
+                  // Save to output gallery
+                  await outputStorage.saveOutput(
+                    `cropped_${file.name}`,
+                    file.type,
+                    blob,
+                    "image",
+                  );
+
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `cropped_${file.name}`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                }
+              }, file.type);
+            }
+          };
+        };
+
+        reader.readAsDataURL(file);
+      }
+
+      addToHistory(
+        "Recortar imágenes",
+        "image",
+        selectedFiles.length,
+        `Recortadas a ${width}x${height}px`,
+      );
+    } catch (error) {
+      console.error("Error recortando:", error);
+      alert("Error al recortar las imágenes");
+    } finally {
+      setProcessing(false);
+    }
+  };
+
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
@@ -327,6 +490,64 @@ function ImageTools() {
 
     if (files.length > 0) {
       setSelectedFiles(files);
+    }
+  };
+
+  const handleUpscale = async (scaleFactor: number = 2) => {
+    if (selectedFiles.length === 0) return;
+
+    setShowUpscaleModal(false);
+    setProcessing(true);
+
+    try {
+      const upscaler = new Upscaler();
+      // Calculamos el tamaño ideal de procesamiento para la GPU actual
+      const optimalPatchSize = getOptimalPatchSize();
+
+      for (const file of selectedFiles) {
+        const dataUrl = await new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onload = (e) => resolve(e.target?.result as string);
+          reader.readAsDataURL(file);
+        });
+
+        // Usamos el patchSize calculado dinámicamente
+        const upscaledDataUrl = await upscaler.upscale(dataUrl, {
+          patchSize: optimalPatchSize,
+          padding: 4,
+        });
+
+        const res = await fetch(upscaledDataUrl);
+        const blob = await res.blob();
+
+        await outputStorage.saveOutput(
+          `upscaled_${file.name}`,
+          file.type,
+          blob,
+          "image",
+        );
+
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `upscaled_AI_${file.name}`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      addToHistory(
+        "Mejorar con IA",
+        "image",
+        selectedFiles.length,
+        `Upscale completado con éxito`,
+      );
+    } catch (error) {
+      console.error("Error en Upscale:", error);
+      alert(
+        "Error al mejorar la imagen con IA. Es posible que la imagen sea demasiado grande para tu tarjeta gráfica.",
+      );
+    } finally {
+      setProcessing(false);
     }
   };
 
@@ -355,7 +576,14 @@ function ImageTools() {
         }
         break;
       case "crop":
-        alert("Función de recorte en desarrollo");
+        if (selectedFiles.length > 0) {
+          setShowCropModal(true);
+        } else {
+          alert(t("image.noImage") || "Please select an image");
+        }
+        break;
+      case "upscale":
+        setShowUpscaleModal(true);
         break;
     }
   };
@@ -370,18 +598,30 @@ function ImageTools() {
         {tools.map((tool) => (
           <button
             key={tool.id}
-            onClick={() => setActiveTool(tool.id)}
+            onClick={() => {
+              // Si está deshabilitado (ej. móvil intentando usar IA), no hacemos nada
+              if (tool.disabled) {
+                alert(
+                  "Esta función requiere mucha memoria y solo está disponible en PC.",
+                );
+                return;
+              }
+              setActiveTool(tool.id);
+            }}
+            // Cambiamos los estilos visuales si la herramienta está deshabilitada
             className={`group relative p-3 sm:p-4 rounded-xl transition-all duration-200 ${
-              activeTool === tool.id
-                ? "bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/25"
-                : "bg-gray-100 dark:bg-slate-700/50 text-slate-700 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-700 border border-gray-300 dark:border-slate-600/50"
+              tool.disabled
+                ? "bg-gray-100/50 dark:bg-slate-800/50 text-gray-400 dark:text-slate-500 opacity-60 cursor-not-allowed grayscale"
+                : activeTool === tool.id
+                  ? "bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/25"
+                  : "bg-gray-100 dark:bg-slate-700/50 text-slate-700 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-700 border border-gray-300 dark:border-slate-600/50"
             }`}
           >
             <div className="text-xl sm:text-2xl mb-1 sm:mb-2">{tool.icon}</div>
             <div className="text-[10px] sm:text-xs font-medium leading-tight">
               {tool.name}
             </div>
-            {activeTool === tool.id && (
+            {activeTool === tool.id && !tool.disabled && (
               <div className="absolute inset-0 rounded-xl border-2 border-white/20"></div>
             )}
           </button>
@@ -554,6 +794,16 @@ function ImageTools() {
         />
       )}
 
+      {showCropModal && selectedFiles.length > 0 && (
+        <CropModal
+          file={selectedFiles[0]}
+          onApply={(x, y, width, height) => {
+            handleCrop(x, y, width, height);
+          }}
+          onCancel={() => setShowCropModal(false)}
+        />
+      )}
+
       {showEditor && selectedFiles.length > 0 && (
         <ImageEditor
           file={selectedFiles[0]}
@@ -563,8 +813,19 @@ function ImageTools() {
           }}
         />
       )}
+
+      {showUpscaleModal && (
+        <UpscaleModal
+          onApply={(factor) => handleUpscale(factor)}
+          onCancel={() => setShowUpscaleModal(false)}
+        />
+      )}
     </div>
   );
 }
 
 export default ImageTools;
+
+// TODO - REVISAR https://gemini.google.com/app/988fc1425ce80fd0
+// TODO - A PARTIR DE AQUI Quiero que lo pueda calcular según la tarjeta gráfica del pc y si se carga desde un móvil está función debe estar disabled
+// TODO - AÑADIR ESTOS CAMBIOS EN UNA RAMA NUEVA

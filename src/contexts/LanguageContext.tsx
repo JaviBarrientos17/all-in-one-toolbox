@@ -90,6 +90,11 @@ export const translations: Translations = {
   "image.process.button": { en: "Process", es: "Procesar", ca: "Processar" },
   "image.process.single": { en: "image", es: "imagen", ca: "imatge" },
   "image.process.plural": { en: "images", es: "imágenes", ca: "imatges" },
+  "image.noImage": {
+    en: "Please select an image",
+    es: "Por favor selecciona una imagen",
+    ca: "Si us plau selecciona una imatge",
+  },
 
   // PDF Tools
   "pdf.title": { en: "PDF Tools", es: "Herramientas PDF", ca: "Eines PDF" },
@@ -331,6 +336,78 @@ export const translations: Translations = {
     ca: "270° (90° Antihorari)",
   },
   "modal.rotate.button": { en: "Rotate", es: "Rotar", ca: "Girar" },
+
+  // Upscale Modal
+  "upscale.title": {
+    en: "AI Image Upscale",
+    es: "Upscale con IA",
+    ca: "Upscale amb IA"
+  },
+  "upscale.desc": {
+    en: "Enhance your image resolution using Artificial Intelligence executed 100% locally in your browser.",
+    es: "Mejora la resolución de tu imagen utilizando Inteligencia Artificial ejecutada 100% en tu navegador.",
+    ca: "Millora la resolució de la teva imatge utilitzant Intel·ligència Artificial executada 100% al teu navegador."
+  },
+  "upscale.hardware": {
+    en: "Hardware Diagnostics",
+    es: "Diagnóstico de Hardware",
+    ca: "Diagnòstic de Maquinari"
+  },
+  "upscale.limit": {
+    en: "WebGL texture limit",
+    es: "Límite de textura WebGL",
+    ca: "Límit de textura WebGL"
+  },
+  "upscale.gpu.high": {
+    en: "High Performance GPU (Fast processing)",
+    es: "GPU de Alto Rendimiento (Procesamiento rápido)",
+    ca: "GPU d'Alt Rendiment (Processament ràpid)"
+  },
+  "upscale.gpu.med": {
+    en: "Standard GPU (Moderate processing)",
+    es: "GPU Estándar (Procesamiento moderado)",
+    ca: "GPU Estàndard (Processament moderat)"
+  },
+  "upscale.gpu.low": {
+    en: "Basic GPU (Slow processing)",
+    es: "GPU Básica (Procesamiento lento)",
+    ca: "GPU Bàsica (Processament lent)"
+  },
+  "upscale.gpu.none": {
+    en: "Hardware acceleration not detected",
+    es: "Aceleración de hardware no detectada",
+    ca: "Acceleració de maquinari no detectada"
+  },
+  "upscale.gpu.error": {
+    en: "Could not read graphics card",
+    es: "No se pudo leer la tarjeta gráfica",
+    ca: "No s'ha pogut llegir la targeta gràfica"
+  },
+  "upscale.gpu.loading": {
+    en: "Calculating...",
+    es: "Calculando...",
+    ca: "Calculant..."
+  },
+  "upscale.factor": {
+    en: "Scale Factor",
+    es: "Factor de ampliación",
+    ca: "Factor d'ampliació"
+  },
+  "upscale.warning": {
+    en: "requires much more memory and processing time.",
+    es: "requiere mucha más memoria y tiempo de procesamiento.",
+    ca: "requereix molta més memòria i temps de processament."
+  },
+  "upscale.cancel": {
+    en: "Cancel",
+    es: "Cancelar",
+    ca: "Cancel·lar"
+  },
+  "upscale.start": {
+    en: "Start Upscale",
+    es: "Iniciar Mejora",
+    ca: "Iniciar Millora"
+  },
 
   // History
   "history.title": {
