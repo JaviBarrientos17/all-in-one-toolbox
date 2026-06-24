@@ -1,7 +1,40 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useOutputs } from '../hooks/useOutputs';
 import { useLanguage } from '../contexts/LanguageContext';
 import { saveAs } from 'file-saver';
+
+interface OutputPreviewItemProps {
+  blob: Blob;
+  name: string;
+}
+
+const OutputPreviewItem: React.FC<OutputPreviewItemProps> = ({ blob, name }) => {
+  const [url, setUrl] = useState<string>('');
+
+  useEffect(() => {
+    const objectUrl = URL.createObjectURL(blob);
+    setUrl(objectUrl);
+    return () => {
+      URL.revokeObjectURL(objectUrl);
+    };
+  }, [blob]);
+
+  if (!url) {
+    return (
+      <div className="flex items-center justify-center w-full h-full bg-slate-200 dark:bg-slate-700">
+        <div className="animate-pulse h-6 w-6 rounded bg-slate-300 dark:bg-slate-600"></div>
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={url}
+      alt={name}
+      className="w-full h-full object-cover animate-fade-in"
+    />
+  );
+};
 
 const OutputGallery: React.FC = () => {
   const { outputs, removeOutput, clearOutputs, loading } = useOutputs();
@@ -57,10 +90,9 @@ const OutputGallery: React.FC = () => {
             {/* Preview Area */}
             <div className="aspect-video bg-slate-100 dark:bg-slate-900 relative flex items-center justify-center overflow-hidden">
               {file.type.startsWith('image/') ? (
-                <img
-                  src={URL.createObjectURL(file.blob)}
-                  alt={file.name}
-                  className="w-full h-full object-cover"
+                <OutputPreviewItem
+                  blob={file.blob}
+                  name={file.name}
                 />
               ) : (
                 <div className="text-4xl">

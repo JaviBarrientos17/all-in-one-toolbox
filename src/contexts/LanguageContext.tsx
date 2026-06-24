@@ -107,6 +107,21 @@ export const translations: Translations = {
     es: "Extraer Páginas",
     ca: "Extreure Pàgines",
   },
+  "pdf.pdfToImg": {
+    en: "PDF to Images",
+    es: "PDF a Imágenes",
+    ca: "PDF a Imatges",
+  },
+  "pdf.imgToPdf": {
+    en: "Images to PDF",
+    es: "Imágenes a PDF",
+    ca: "Imatges a PDF",
+  },
+  "pdf.watermark": {
+    en: "Add Watermark",
+    es: "Marca de Agua",
+    ca: "Marca d'Aigua",
+  },
   "pdf.alert.mergeMin": {
     en: "Select at least 2 PDF files to merge",
     es: "Selecciona al menos 2 archivos PDF para fusionar",
@@ -158,6 +173,91 @@ export const translations: Translations = {
     es: "PDF rotado",
     ca: "PDF girat",
   },
+  "pdf.history.pdfToImg": {
+    en: "PDF to Images",
+    es: "PDF a Imágenes",
+    ca: "PDF a Imatges",
+  },
+  "pdf.history.imgToPdf": {
+    en: "Images to PDF",
+    es: "Imágenes a PDF",
+    ca: "Imatges a PDF",
+  },
+  "pdf.history.watermark": {
+    en: "Add Watermark to PDF",
+    es: "Marca de Agua añadida",
+    ca: "Marca d'Aigua afegida",
+  },
+  "pdf.watermark.text": {
+    en: "Watermark Text",
+    es: "Texto de la Marca de Agua",
+    ca: "Text de la Marca d'Aigua",
+  },
+  "pdf.watermark.style": {
+    en: "Watermark Style",
+    es: "Estilo de la Marca de Agua",
+    ca: "Estil de la Marca d'Aigua",
+  },
+  "pdf.watermark.style.center": {
+    en: "Centered",
+    es: "Centrado",
+    ca: "Centrat",
+  },
+  "pdf.watermark.style.diagonal": {
+    en: "Diagonal",
+    es: "Diagonal",
+    ca: "Diagonal",
+  },
+  "pdf.watermark.style.grid": {
+    en: "Repeated Grid",
+    es: "Cuadrícula Repetida",
+    ca: "Quadrícula Repetida",
+  },
+  "pdf.watermark.color": {
+    en: "Color",
+    es: "Color",
+    ca: "Color",
+  },
+  "pdf.watermark.fontSize": {
+    en: "Font Size",
+    es: "Tamaño de Fuente",
+    ca: "Mida de lletra",
+  },
+  "pdf.watermark.opacity": {
+    en: "Opacity",
+    es: "Opacidad",
+    ca: "Opacitat",
+  },
+  "pdf.compress.quality": {
+    en: "Compression Level",
+    es: "Nivel de Compresión",
+    ca: "Nivel de Compressió",
+  },
+  "pdf.compress.preset.high": {
+    en: "High Quality (Less compression)",
+    es: "Alta Calidad (Menor compresión)",
+    ca: "Alta Qualitat (Menor compressió)",
+  },
+  "pdf.compress.preset.medium": {
+    en: "Medium Quality (Balanced)",
+    es: "Calidad Media (Equilibrada)",
+    ca: "Qualitat Mitjana (Equilibrada)",
+  },
+  "pdf.compress.preset.low": {
+    en: "Low Quality (Max compression)",
+    es: "Baja Calidad (Máxima compresión)",
+    ca: "Baixa Qualitat (Màxima compressió)",
+  },
+  "pdf.pdfToImg.format": {
+    en: "Image Format",
+    es: "Formato de Imagen",
+    ca: "Format d'Imatge",
+  },
+  "pdf.pdfToImg.resolution": {
+    en: "Resolution Scale",
+    es: "Escala de Resolución",
+    ca: "Escala de Resolució",
+  },
 
   // Document Tools
   "doc.title": {
@@ -166,12 +266,30 @@ export const translations: Translations = {
     ca: "Eines de Documents",
   },
   "doc.toPDF": { en: "TXT to PDF", es: "TXT a PDF", ca: "TXT a PDF" },
+  "doc.mdToPdf": { en: "Markdown → PDF/HTML", es: "Markdown → PDF/HTML", ca: "Markdown → PDF/HTML" },
+  "doc.jsonToYaml": { en: "JSON ↔ YAML", es: "JSON ↔ YAML", ca: "JSON ↔ YAML" },
+  "doc.jsonToXml": { en: "JSON ↔ XML", es: "JSON ↔ XML", ca: "JSON ↔ XML" },
   "doc.toWord": { en: "Word to PDF", es: "Word a PDF", ca: "Word a PDF" },
   "doc.toExcel": { en: "Excel to PDF", es: "Excel a PDF", ca: "Excel a PDF" },
   "doc.toPowerPoint": {
     en: "To PowerPoint",
     es: "A PowerPoint",
     ca: "A PowerPoint",
+  },
+  "doc.history.jsonToYaml": {
+    en: "JSON ↔ YAML conversion",
+    es: "Conversión JSON ↔ YAML",
+    ca: "Conversió JSON ↔ YAML",
+  },
+  "doc.history.jsonToXml": {
+    en: "JSON ↔ XML conversion",
+    es: "Conversión JSON ↔ XML",
+    ca: "Conversió JSON ↔ XML",
+  },
+  "doc.history.mdToPdf": {
+    en: "Markdown conversion",
+    es: "Conversión Markdown",
+    ca: "Conversió Markdown",
   },
   "doc.dropzone.drag": {
     en: "Drop files here",
@@ -438,6 +556,26 @@ export const translations: Translations = {
   "history.close": { en: "Close", es: "Cerrar", ca: "Tancar" },
   "history.files": { en: "files", es: "archivos", ca: "fitxers" },
   "history.file": { en: "file", es: "archivo", ca: "fitxer" },
+  "history.time.now": {
+    en: "Just now",
+    es: "Ahora mismo",
+    ca: "Ara mateix",
+  },
+  "history.time.min": {
+    en: "{val} min ago",
+    es: "Hace {val} min",
+    ca: "Fa {val} min",
+  },
+  "history.time.hours": {
+    en: "{val} h ago",
+    es: "Hace {val} h",
+    ca: "Fa {val} h",
+  },
+  "history.time.days": {
+    en: "{val} days ago",
+    es: "Hace {val} días",
+    ca: "Fa {val} dies",
+  },
 
   // Footer
   "footer.privacy": {

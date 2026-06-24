@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import imageCompression from "browser-image-compression";
 import ImagePreview from "./ImagePreview";
 import CompressionSettings, { CompressionOptions } from "./CompressionSettings";
@@ -91,6 +91,26 @@ function ImageTools() {
     },
   ];
 
+  // Load original dimensions of the selected image
+  const [originalDimensions, setOriginalDimensions] = useState<{ width: number; height: number } | null>(null);
+
+  useEffect(() => {
+    if (selectedFiles.length > 0 && activeTool === "resize") {
+      const file = selectedFiles[0];
+      const img = new Image();
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        img.src = e.target?.result as string;
+        img.onload = () => {
+          setOriginalDimensions({ width: img.width, height: img.height });
+        };
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setOriginalDimensions(null);
+    }
+  }, [selectedFiles, activeTool]);
+
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setSelectedFiles(Array.from(e.target.files));
@@ -122,7 +142,6 @@ function ImageTools() {
         const file = selectedFiles[i];
         const compressedFile = await imageCompression(file, options);
 
-        // Save to output gallery
         await outputStorage.saveOutput(
           `compressed_${file.name}`,
           compressedFile.type,
@@ -165,46 +184,55 @@ function ImageTools() {
     setProcessing(true);
 
     try {
-      for (const file of selectedFiles) {
-        const img = new Image();
-        const reader = new FileReader();
+      const resizePromises = selectedFiles.map((file) => {
+        return new Promise<void>((resolve, reject) => {
+          const img = new Image();
+          const reader = new FileReader();
 
-        reader.onload = (e) => {
-          img.src = e.target?.result as string;
+          reader.onload = (e) => {
+            img.src = e.target?.result as string;
 
-          img.onload = () => {
-            const canvas = document.createElement("canvas");
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext("2d");
+            img.onload = () => {
+              const canvas = document.createElement("canvas");
+              canvas.width = width;
+              canvas.height = height;
+              const ctx = canvas.getContext("2d");
 
-            if (ctx) {
-              ctx.drawImage(img, 0, 0, width, height);
+              if (ctx) {
+                ctx.drawImage(img, 0, 0, width, height);
 
-              canvas.toBlob(async (blob) => {
-                if (blob) {
-                  // Save to output gallery
-                  await outputStorage.saveOutput(
-                    `resized_${file.name}`,
-                    file.type,
-                    blob,
-                    "image",
-                  );
+                canvas.toBlob(async (blob) => {
+                  if (blob) {
+                    await outputStorage.saveOutput(
+                      `resized_${file.name}`,
+                      file.type,
+                      blob,
+                      "image",
+                    );
 
-                  const url = URL.createObjectURL(blob);
-                  const a = document.createElement("a");
-                  a.href = url;
-                  a.download = `resized_${file.name}`;
-                  a.click();
-                  URL.revokeObjectURL(url);
-                }
-              }, file.type);
-            }
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = `resized_${file.name}`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    resolve();
+                  } else {
+                    reject(new Error("Canvas to Blob failed"));
+                  }
+                }, file.type);
+              } else {
+                resolve();
+              }
+            };
+            img.onerror = () => reject(new Error("Image loading error"));
           };
-        };
+          reader.onerror = () => reject(new Error("File read error"));
+          reader.readAsDataURL(file);
+        });
+      });
 
-        reader.readAsDataURL(file);
-      }
+      await Promise.all(resizePromises);
 
       addToHistory(
         "Redimensionar imágenes",
@@ -234,53 +262,62 @@ function ImageTools() {
     const mimeType = `image/${format}`;
 
     try {
-      for (const file of selectedFiles) {
-        const nameWithoutExt =
-          file.name.substring(0, file.name.lastIndexOf(".")) || file.name;
-        const newName = `${nameWithoutExt}.${format}`;
-        const img = new Image();
-        const reader = new FileReader();
+      const convertPromises = selectedFiles.map((file) => {
+        return new Promise<void>((resolve, reject) => {
+          const nameWithoutExt =
+            file.name.substring(0, file.name.lastIndexOf(".")) || file.name;
+          const newName = `${nameWithoutExt}.${format}`;
+          const img = new Image();
+          const reader = new FileReader();
 
-        reader.onload = (e) => {
-          img.src = e.target?.result as string;
+          reader.onload = (e) => {
+            img.src = e.target?.result as string;
 
-          img.onload = () => {
-            const canvas = document.createElement("canvas");
-            canvas.width = img.width;
-            canvas.height = img.height;
-            const ctx = canvas.getContext("2d");
+            img.onload = () => {
+              const canvas = document.createElement("canvas");
+              canvas.width = img.width;
+              canvas.height = img.height;
+              const ctx = canvas.getContext("2d");
 
-            if (ctx) {
-              ctx.drawImage(img, 0, 0);
+              if (ctx) {
+                ctx.drawImage(img, 0, 0);
 
-              canvas.toBlob(
-                async (blob) => {
-                  if (blob) {
-                    // Save to output gallery
-                    await outputStorage.saveOutput(
-                      `converted_${newName}`,
-                      mimeType,
-                      blob,
-                      "image",
-                    );
+                canvas.toBlob(
+                  async (blob) => {
+                    if (blob) {
+                      await outputStorage.saveOutput(
+                        `converted_${newName}`,
+                        mimeType,
+                        blob,
+                        "image",
+                      );
 
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement("a");
-                    a.href = url;
-                    a.download = `converted_${newName}`;
-                    a.click();
-                    URL.revokeObjectURL(url);
-                  }
-                },
-                mimeType,
-                quality || 0.92,
-              );
-            }
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement("a");
+                      a.href = url;
+                      a.download = `converted_${newName}`;
+                      a.click();
+                      URL.revokeObjectURL(url);
+                      resolve();
+                    } else {
+                      reject(new Error("Canvas to Blob failed"));
+                    }
+                  },
+                  mimeType,
+                  quality || 0.92,
+                );
+              } else {
+                resolve();
+              }
+            };
+            img.onerror = () => reject(new Error("Image loading error"));
           };
-        };
+          reader.onerror = () => reject(new Error("File read error"));
+          reader.readAsDataURL(file);
+        });
+      });
 
-        reader.readAsDataURL(file);
-      }
+      await Promise.all(convertPromises);
 
       addToHistory(
         "Convertir imágenes",
@@ -308,55 +345,64 @@ function ImageTools() {
     setProcessing(true);
 
     try {
-      for (const file of selectedFiles) {
-        const img = new Image();
-        const reader = new FileReader();
+      const rotatePromises = selectedFiles.map((file) => {
+        return new Promise<void>((resolve, reject) => {
+          const img = new Image();
+          const reader = new FileReader();
 
-        reader.onload = (e) => {
-          img.src = e.target?.result as string;
+          reader.onload = (e) => {
+            img.src = e.target?.result as string;
 
-          img.onload = () => {
-            const canvas = document.createElement("canvas");
+            img.onload = () => {
+              const canvas = document.createElement("canvas");
 
-            if (rotation === 90 || rotation === 270) {
-              canvas.width = img.height;
-              canvas.height = img.width;
-            } else {
-              canvas.width = img.width;
-              canvas.height = img.height;
-            }
+              if (rotation === 90 || rotation === 270) {
+                canvas.width = img.height;
+                canvas.height = img.width;
+              } else {
+                canvas.width = img.width;
+                canvas.height = img.height;
+              }
 
-            const ctx = canvas.getContext("2d");
+              const ctx = canvas.getContext("2d");
 
-            if (ctx) {
-              ctx.translate(canvas.width / 2, canvas.height / 2);
-              ctx.rotate((rotation * Math.PI) / 180);
-              ctx.drawImage(img, -img.width / 2, -img.height / 2);
+              if (ctx) {
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+                ctx.rotate((rotation * Math.PI) / 180);
+                ctx.drawImage(img, -img.width / 2, -img.height / 2);
 
-              canvas.toBlob(async (blob) => {
-                if (blob) {
-                  // Save to output gallery
-                  await outputStorage.saveOutput(
-                    `rotated_${file.name}`,
-                    file.type,
-                    blob,
-                    "image",
-                  );
+                canvas.toBlob(async (blob) => {
+                  if (blob) {
+                    await outputStorage.saveOutput(
+                      `rotated_${file.name}`,
+                      file.type,
+                      blob,
+                      "image",
+                    );
 
-                  const url = URL.createObjectURL(blob);
-                  const a = document.createElement("a");
-                  a.href = url;
-                  a.download = `rotated_${file.name}`;
-                  a.click();
-                  URL.revokeObjectURL(url);
-                }
-              }, file.type);
-            }
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = `rotated_${file.name}`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    resolve();
+                  } else {
+                    reject(new Error("Canvas to Blob failed"));
+                  }
+                }, file.type);
+              } else {
+                resolve();
+              }
+            };
+            img.onerror = () => reject(new Error("Image loading error"));
           };
-        };
+          reader.onerror = () => reject(new Error("File read error"));
+          reader.readAsDataURL(file);
+        });
+      });
 
-        reader.readAsDataURL(file);
-      }
+      await Promise.all(rotatePromises);
 
       addToHistory(
         "Rotar imágenes",
@@ -394,77 +440,82 @@ function ImageTools() {
     setProcessing(true);
 
     try {
-      for (const file of selectedFiles) {
-        const img = new Image();
-        const reader = new FileReader();
+      const cropPromises = selectedFiles.map((file) => {
+        return new Promise<void>((resolve, reject) => {
+          const img = new Image();
+          const reader = new FileReader();
 
-        reader.onload = (e) => {
-          img.src = e.target?.result as string;
+          reader.onload = (e) => {
+            img.src = e.target?.result as string;
 
-          img.onload = () => {
-            // Determine if values are in percentages or pixels
-            let cropX = x;
-            let cropY = y;
-            let cropWidth = width;
-            let cropHeight = height;
+            img.onload = () => {
+              let cropX = x;
+              let cropY = y;
+              let cropWidth = width;
+              let cropHeight = height;
 
-            // Convert percentages to pixels if needed
-            if (x < 2 && y < 2 && width < 2 && height < 2) {
-              // Assuming values are percentages if all are < 2 (represents %)
-              cropX = (x / 100) * img.width;
-              cropY = (y / 100) * img.height;
-              cropWidth = (width / 100) * img.width;
-              cropHeight = (height / 100) * img.height;
-            }
+              if (x < 2 && y < 2 && width < 2 && height < 2) {
+                cropX = (x / 100) * img.width;
+                cropY = (y / 100) * img.height;
+                cropWidth = (width / 100) * img.width;
+                cropHeight = (height / 100) * img.height;
+              }
 
-            // Ensure values don't exceed image boundaries
-            cropX = Math.max(0, Math.min(cropX, img.width - cropWidth));
-            cropY = Math.max(0, Math.min(cropY, img.height - cropHeight));
-            cropWidth = Math.max(1, Math.min(cropWidth, img.width - cropX));
-            cropHeight = Math.max(1, Math.min(cropHeight, img.height - cropY));
+              cropX = Math.max(0, Math.min(cropX, img.width - cropWidth));
+              cropY = Math.max(0, Math.min(cropY, img.height - cropHeight));
+              cropWidth = Math.max(1, Math.min(cropWidth, img.width - cropX));
+              cropHeight = Math.max(1, Math.min(cropHeight, img.height - cropY));
 
-            const canvas = document.createElement("canvas");
-            canvas.width = cropWidth;
-            canvas.height = cropHeight;
-            const ctx = canvas.getContext("2d");
+              const canvas = document.createElement("canvas");
+              canvas.width = cropWidth;
+              canvas.height = cropHeight;
+              const ctx = canvas.getContext("2d");
 
-            if (ctx) {
-              ctx.drawImage(
-                img,
-                cropX,
-                cropY,
-                cropWidth,
-                cropHeight,
-                0,
-                0,
-                cropWidth,
-                cropHeight,
-              );
+              if (ctx) {
+                ctx.drawImage(
+                  img,
+                  cropX,
+                  cropY,
+                  cropWidth,
+                  cropHeight,
+                  0,
+                  0,
+                  cropWidth,
+                  cropHeight,
+                );
 
-              canvas.toBlob(async (blob) => {
-                if (blob) {
-                  // Save to output gallery
-                  await outputStorage.saveOutput(
-                    `cropped_${file.name}`,
-                    file.type,
-                    blob,
-                    "image",
-                  );
+                canvas.toBlob(async (blob) => {
+                  if (blob) {
+                    await outputStorage.saveOutput(
+                      `cropped_${file.name}`,
+                      file.type,
+                      blob,
+                      "image",
+                    );
 
-                  const url = URL.createObjectURL(blob);
-                  const a = document.createElement("a");
-                  a.href = url;
-                  a.download = `cropped_${file.name}`;
-                  a.click();
-                  URL.revokeObjectURL(url);
-                }
-              }, file.type);
-            }
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = `cropped_${file.name}`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    resolve();
+                  } else {
+                    reject(new Error("Canvas to Blob failed"));
+                  }
+                }, file.type);
+              } else {
+                resolve();
+              }
+            };
+            img.onerror = () => reject(new Error("Image loading error"));
           };
-        };
+          reader.onerror = () => reject(new Error("File read error"));
+          reader.readAsDataURL(file);
+        });
+      });
 
-        reader.readAsDataURL(file);
-      }
+      await Promise.all(cropPromises);
 
       addToHistory(
         "Recortar imágenes",
@@ -511,7 +562,6 @@ function ImageTools() {
 
     try {
       const upscaler = new Upscaler();
-      // Calculamos el tamaño ideal de procesamiento para la GPU actual
       const optimalPatchSize = getOptimalPatchSize();
 
       for (const file of selectedFiles) {
@@ -521,23 +571,64 @@ function ImageTools() {
           reader.readAsDataURL(file);
         });
 
-        // Usamos el patchSize calculado dinámicamente
+        // 1. Run AI upscale (always outputs 2x scale)
         const upscaledDataUrl = await upscaler.upscale(dataUrl, {
           patchSize: optimalPatchSize,
           padding: 4,
         });
 
-        const res = await fetch(upscaledDataUrl);
-        const blob = await res.blob();
+        // 2. Adjust output if user chose a scaleFactor other than 2
+        let finalBlob: Blob;
+        if (scaleFactor !== 2) {
+          const tempImg = new Image();
+          await new Promise<void>((resolve, reject) => {
+            tempImg.onload = () => resolve();
+            tempImg.onerror = () => reject(new Error("Temp image load error"));
+            tempImg.src = upscaledDataUrl;
+          });
+
+          const originalImg = new Image();
+          await new Promise<void>((resolve) => {
+            originalImg.onload = () => resolve();
+            originalImg.src = dataUrl;
+          });
+
+          const finalWidth = originalImg.width * scaleFactor;
+          const finalHeight = originalImg.height * scaleFactor;
+
+          const canvas = document.createElement("canvas");
+          canvas.width = finalWidth;
+          canvas.height = finalHeight;
+          const ctx = canvas.getContext("2d");
+
+          if (ctx) {
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = "high";
+            ctx.drawImage(tempImg, 0, 0, finalWidth, finalHeight);
+
+            finalBlob = await new Promise<Blob>((resolve, reject) => {
+              canvas.toBlob((b) => {
+                if (b) resolve(b);
+                else reject(new Error("Canvas resize failed"));
+              }, file.type);
+            });
+          } else {
+            const res = await fetch(upscaledDataUrl);
+            finalBlob = await res.blob();
+          }
+        } else {
+          const res = await fetch(upscaledDataUrl);
+          finalBlob = await res.blob();
+        }
 
         await outputStorage.saveOutput(
           `upscaled_${file.name}`,
           file.type,
-          blob,
+          finalBlob,
           "image",
         );
 
-        const url = URL.createObjectURL(blob);
+        const url = URL.createObjectURL(finalBlob);
         const a = document.createElement("a");
         a.href = url;
         a.download = `upscaled_AI_${file.name}`;
@@ -549,7 +640,7 @@ function ImageTools() {
         "Mejorar con IA",
         "image",
         selectedFiles.length,
-        `Upscale completado con éxito`,
+        `Upscale completado a ${scaleFactor}x con éxito`,
       );
     } catch (error) {
       console.error("Error en Upscale:", error);
@@ -609,7 +700,6 @@ function ImageTools() {
           <button
             key={tool.id}
             onClick={() => {
-              // Si está deshabilitado (ej. móvil intentando usar IA), no hacemos nada
               if (tool.disabled) {
                 alert(
                   "Esta función requiere mucha memoria y solo está disponible en PC.",
@@ -618,7 +708,6 @@ function ImageTools() {
               }
               setActiveTool(tool.id);
             }}
-            // Cambiamos los estilos visuales si la herramienta está deshabilitada
             className={`group relative p-3 sm:p-4 rounded-xl transition-all duration-200 ${
               tool.disabled
                 ? "bg-gray-100/50 dark:bg-slate-800/50 text-gray-400 dark:text-slate-500 opacity-60 cursor-not-allowed grayscale"
@@ -779,6 +868,8 @@ function ImageTools() {
 
       {showResizeModal && (
         <ResizeModal
+          originalWidth={originalDimensions?.width}
+          originalHeight={originalDimensions?.height}
           onApply={(width, height) => {
             handleResize(width, height);
           }}
@@ -835,7 +926,3 @@ function ImageTools() {
 }
 
 export default ImageTools;
-
-// TODO - REVISAR https://gemini.google.com/app/988fc1425ce80fd0
-// TODO - A PARTIR DE AQUI Quiero que lo pueda calcular según la tarjeta gráfica del pc y si se carga desde un móvil está función debe estar disabled
-// TODO - AÑADIR ESTOS CAMBIOS EN UNA RAMA NUEVA

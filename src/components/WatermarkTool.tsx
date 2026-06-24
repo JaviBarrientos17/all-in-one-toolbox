@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { outputStorage } from '../utils/outputStorage'
 
 interface WatermarkToolProps {
   files: File[]
@@ -95,8 +96,14 @@ function WatermarkTool({ files, onComplete, onCancel }: WatermarkToolProps) {
               ctx.strokeText(text, x, y)
               ctx.fillText(text, x, y)
 
-              canvas.toBlob((blob) => {
+              canvas.toBlob(async (blob) => {
                 if (blob) {
+                  await outputStorage.saveOutput(
+                    `watermarked_${file.name}`,
+                    file.type,
+                    blob,
+                    'image'
+                  )
                   const url = URL.createObjectURL(blob)
                   const a = document.createElement('a')
                   a.href = url

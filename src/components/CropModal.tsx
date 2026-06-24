@@ -124,6 +124,40 @@ function CropModal({ file, onApply, onCancel }: CropModalProps) {
     setIsSelecting(false)
   }
 
+  const handleTouchStart = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    if (!canvasRef.current || !imageData) return
+    const rect = canvasRef.current.getBoundingClientRect()
+    const scale = (canvasRef.current as any).cropScale || 1
+    const touch = e.touches[0]
+    const x = (touch.clientX - rect.left) / scale
+    const y = (touch.clientY - rect.top) / scale
+    setIsSelecting(true)
+    setStartPos({ x: Math.max(0, Math.min(x, imageData.width)), y: Math.max(0, Math.min(y, imageData.height)) })
+  }
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    if (!isSelecting || !canvasRef.current || !imageData) return
+    const rect = canvasRef.current.getBoundingClientRect()
+    const scale = (canvasRef.current as any).cropScale || 1
+    const touch = e.touches[0]
+    const x = (touch.clientX - rect.left) / scale
+    const y = (touch.clientY - rect.top) / scale
+
+    let newX = Math.min(startPos.x, x)
+    let newY = Math.min(startPos.y, y)
+    let newWidth = Math.abs(x - startPos.x)
+    let newHeight = Math.abs(y - startPos.y)
+
+    newX = Math.max(0, Math.min(newX, imageData.width))
+    newY = Math.max(0, Math.min(newY, imageData.height))
+    newWidth = Math.min(newWidth, imageData.width - newX)
+    newHeight = Math.min(newHeight, imageData.height - newY)
+
+    if (newWidth > 5 && newHeight > 5) {
+      setSelection({ x: newX, y: newY, width: newWidth, height: newHeight })
+    }
+  }
+
   const handlePreset = (aspect: { width: number; height: number }) => {
     if (!imageData) return
     let newWidth = Math.min(aspect.width, imageData.width)
@@ -178,6 +212,9 @@ function CropModal({ file, onApply, onCancel }: CropModalProps) {
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleMouseUp}
             className="w-full cursor-crosshair block"
           />
         </div>

@@ -19,10 +19,10 @@ function History({ isOpen, onClose }: HistoryProps) {
     const hours = Math.floor(minutes / 60)
     const days = Math.floor(hours / 24)
 
-    if (minutes < 1) return 'Ahora mismo'
-    if (minutes < 60) return `Hace ${minutes} min`
-    if (hours < 24) return `Hace ${hours} h`
-    return `Hace ${days} días`
+    if (minutes < 1) return t('history.time.now')
+    if (minutes < 60) return t('history.time.min').replace('{val}', String(minutes))
+    if (hours < 24) return t('history.time.hours').replace('{val}', String(hours))
+    return t('history.time.days').replace('{val}', String(days))
   }
 
   const getCategoryIcon = (category: string) => {
