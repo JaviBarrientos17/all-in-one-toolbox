@@ -37,7 +37,7 @@ function History({ isOpen, onClose }: HistoryProps) {
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
-      <div className="bg-slate-800 rounded-t-2xl sm:rounded-2xl w-full sm:max-w-2xl max-h-[90vh] sm:max-h-[80vh] flex flex-col border border-slate-700 shadow-2xl">
+      <div className="toolbox-modal-card bg-slate-800 rounded-t-2xl sm:rounded-2xl w-full sm:max-w-2xl max-h-[90vh] sm:max-h-[80vh] flex flex-col border border-slate-700 shadow-2xl">
         <div className="p-4 sm:p-6 border-b border-slate-700 flex items-center justify-between flex-shrink-0">
           <h2 className="text-lg sm:text-xl font-bold text-slate-100">{t('history.title')}</h2>
           <button

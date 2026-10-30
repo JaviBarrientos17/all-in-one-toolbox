@@ -59,7 +59,7 @@ function ResizeModal({ onApply, onCancel, originalWidth = 800, originalHeight = 
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-3 sm:p-4">
-      <div className="bg-slate-800 rounded-xl sm:rounded-2xl p-4 sm:p-6 max-w-lg w-full border border-slate-700 shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div className="toolbox-modal-card bg-slate-800 rounded-xl sm:rounded-2xl p-4 sm:p-6 max-w-lg w-full border border-slate-700 shadow-2xl max-h-[90vh] overflow-y-auto">
         <h3 className="text-lg sm:text-xl font-bold text-slate-100 mb-4 sm:mb-6">{t('modal.resize.title')}</h3>
 
         {/* Quick Presets */}

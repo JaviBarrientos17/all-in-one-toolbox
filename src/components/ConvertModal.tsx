@@ -17,7 +17,7 @@ function ConvertModal({ onApply, onCancel }: ConvertModalProps) {
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-slate-800 dark:bg-slate-800 light:bg-white rounded-2xl p-6 max-w-md w-full border border-slate-700 dark:border-slate-700 light:border-gray-200 shadow-2xl">
+      <div className="toolbox-modal-card bg-slate-800 dark:bg-slate-800 light:bg-white rounded-2xl p-6 max-w-md w-full border border-slate-700 dark:border-slate-700 light:border-gray-200 shadow-2xl">
         <h3 className="text-xl font-bold text-slate-100 dark:text-slate-100 light:text-slate-900 mb-6">Convert Format</h3>
 
         <div className="space-y-4 mb-6">

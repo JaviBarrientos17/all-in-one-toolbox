@@ -187,7 +187,7 @@ function CropModal({ file, onApply, onCancel }: CropModalProps) {
   if (!imageData) {
     return (
       <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-3 sm:p-4">
-        <div className="bg-slate-800 rounded-xl sm:rounded-2xl p-4 sm:p-6 max-w-lg w-full border border-slate-700 shadow-2xl">
+        <div className="toolbox-modal-card bg-slate-800 rounded-xl sm:rounded-2xl p-4 sm:p-6 max-w-lg w-full border border-slate-700 shadow-2xl">
           <p className="text-slate-300">{t('image.processing')}</p>
         </div>
       </div>
@@ -199,7 +199,7 @@ function CropModal({ file, onApply, onCancel }: CropModalProps) {
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-3 sm:p-4">
-      <div className="bg-slate-800 dark:bg-slate-800 light:bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 max-w-2xl w-full border border-slate-700 dark:border-slate-700 light:border-gray-200 shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div className="toolbox-modal-card bg-slate-800 dark:bg-slate-800 light:bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 max-w-2xl w-full border border-slate-700 dark:border-slate-700 light:border-gray-200 shadow-2xl max-h-[90vh] overflow-y-auto">
         <h3 className="text-lg sm:text-xl font-bold text-slate-100 dark:text-slate-100 light:text-slate-900 mb-4">
           {t('image.crop')}
         </h3>

@@ -65,7 +65,7 @@ const OutputGallery: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="toolbox-output-gallery space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <span>📥</span> {t('outputs.title')}
@@ -85,7 +85,7 @@ const OutputGallery: React.FC = () => {
         {outputs.map((file) => (
           <div
             key={file.id}
-            className="group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300"
+            className="toolbox-output-card group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300"
           >
             {/* Preview Area */}
             <div className="aspect-video bg-slate-100 dark:bg-slate-900 relative flex items-center justify-center overflow-hidden">

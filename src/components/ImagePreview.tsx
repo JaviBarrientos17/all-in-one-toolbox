@@ -38,11 +38,11 @@ function ImagePreview({ files, onRemove }: ImagePreviewProps) {
       <h3 className="font-medium text-slate-300 mb-2 sm:mb-3 text-xs sm:text-sm">
         {t('general.selectedImages')} ({files.length})
       </h3>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3">
+      <div className="toolbox-file-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3">
         {files.map((file, index) => (
-          <div key={index} className="relative bg-slate-800/50 rounded-lg sm:rounded-xl overflow-hidden group border border-slate-700/50 hover:border-slate-600 transition-colors">
+          <div key={index} className="toolbox-file-card relative bg-slate-800/50 rounded-lg sm:rounded-xl overflow-hidden group border border-slate-700/50 hover:border-slate-600 transition-colors">
             {previews[index] && (
-              <div className="aspect-square overflow-hidden bg-slate-900/50">
+              <div className="toolbox-file-preview aspect-square overflow-hidden bg-slate-900/50">
                 <img
                   src={previews[index]}
                   alt={file.name}

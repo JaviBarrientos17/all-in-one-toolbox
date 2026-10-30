@@ -28,6 +28,16 @@ export const translations: Translations = {
     es: "100% Procesamiento Local",
     ca: "100% Processament Local",
   },
+  "app.localProcessing": {
+    en: "Local processing",
+    es: "Procesamiento local",
+    ca: "Processament local",
+  },
+  "app.privacyFirst": {
+    en: "Privacy first",
+    es: "Privacidad ante todo",
+    ca: "La privacitat, primer de tot",
+  },
   "app.pageTitle": {
     en: "All-in-One Toolbox - Local File Processing",
     es: "All-in-One Toolbox - Procesamiento Local de Archivos",

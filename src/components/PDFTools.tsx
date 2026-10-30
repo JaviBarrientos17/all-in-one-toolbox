@@ -690,24 +690,25 @@ function PDFTools() {
   };
 
   return (
-    <div>
-      <h2 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-slate-200 mb-4 sm:mb-6">
+    <div className="toolbox-tool-view">
+      <h2 className="toolbox-section-heading text-lg sm:text-xl font-semibold text-slate-900 dark:text-slate-200 mb-4 sm:mb-6">
         {t("pdf.title")}
       </h2>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 mb-4 sm:mb-6">
+      <div className="toolbox-tool-grid grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 mb-4 sm:mb-6">
         {tools.map((tool) => (
           <button
             key={tool.id}
+            data-active={activeTool === tool.id}
             onClick={() => setActiveTool(tool.id)}
-            className={`group relative p-3 sm:p-4 rounded-xl transition-all duration-200 ${
+            className={`toolbox-tool-card group relative p-3 sm:p-4 rounded-xl transition-all duration-200 ${
               activeTool === tool.id
                 ? "bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-500/25"
                 : "bg-gray-100 dark:bg-slate-700/50 text-slate-700 dark:text-slate-300 hover:bg-gray-200 dark:hover:bg-slate-700 border border-gray-300 dark:border-slate-600/50"
             }`}
           >
-            <div className="text-xl sm:text-2xl mb-1 sm:mb-2">{tool.icon}</div>
-            <div className="text-[10px] sm:text-xs font-medium leading-tight">
+            <div className="toolbox-tool-icon text-xl sm:text-2xl mb-1 sm:mb-2">{tool.icon}</div>
+            <div className="toolbox-tool-label text-[10px] sm:text-xs font-medium leading-tight">
               {tool.name}
             </div>
             {activeTool === tool.id && (
@@ -959,7 +960,8 @@ function PDFTools() {
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`relative border-2 border-dashed rounded-xl sm:rounded-2xl p-6 sm:p-8 md:p-12 text-center mb-4 sm:mb-6 transition-all duration-300 cursor-pointer ${
+        data-dragging={isDragging}
+        className={`toolbox-dropzone relative border-2 border-dashed rounded-xl sm:rounded-2xl p-6 sm:p-8 md:p-12 text-center mb-4 sm:mb-6 transition-all duration-300 cursor-pointer ${
           isDragging
             ? "border-indigo-500 bg-indigo-500/10 scale-[1.02]"
             : "border-gray-300 dark:border-slate-600 bg-gray-50 dark:bg-slate-800/30 hover:border-gray-400 dark:hover:border-slate-500 hover:bg-gray-100 dark:hover:bg-slate-800/50"
@@ -1020,7 +1022,7 @@ function PDFTools() {
             {selectedFiles.map((file, index) => (
               <div
                 key={index}
-                className="bg-gray-100 dark:bg-slate-800/50 p-3 sm:p-4 rounded-lg sm:rounded-xl flex items-center gap-2 sm:gap-3 border border-gray-300 dark:border-slate-700/50 hover:border-gray-400 dark:hover:border-slate-600 transition-colors"
+                className="toolbox-selected-file bg-gray-100 dark:bg-slate-800/50 p-3 sm:p-4 rounded-lg sm:rounded-xl flex items-center gap-2 sm:gap-3 border border-gray-300 dark:border-slate-700/50 hover:border-gray-400 dark:hover:border-slate-600 transition-colors"
               >
                 <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gray-200 dark:bg-slate-700/50 rounded-lg flex items-center justify-center flex-shrink-0">
                   <svg
@@ -1054,7 +1056,7 @@ function PDFTools() {
       <button
         onClick={handleProcess}
         disabled={selectedFiles.length === 0 || processing}
-        className="w-full py-3 sm:py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl text-sm sm:text-base font-semibold hover:from-indigo-600 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-400 dark:disabled:from-slate-700 dark:disabled:to-slate-700 disabled:cursor-not-allowed transition-all duration-200 shadow-lg shadow-indigo-500/25 disabled:shadow-none"
+        className="toolbox-primary-action w-full py-3 sm:py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl text-sm sm:text-base font-semibold hover:from-indigo-600 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-400 dark:disabled:from-slate-700 dark:disabled:to-slate-700 disabled:cursor-not-allowed transition-all duration-200 shadow-lg shadow-indigo-500/25 disabled:shadow-none"
       >
         {processing ? (
           <span className="flex items-center justify-center gap-2">

@@ -53,7 +53,7 @@ const UpscaleModal: React.FC<UpscaleModalProps> = ({ onApply, onCancel }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-      <div className="bg-slate-900 rounded-2xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-700/50">
+      <div className="toolbox-modal-card bg-slate-900 rounded-2xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-700/50">
         <div className="flex items-center gap-3 mb-4">
           <span className="text-3xl">✨</span>
           <h3 className="text-xl sm:text-2xl font-bold text-white">
